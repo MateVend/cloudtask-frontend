@@ -24,6 +24,25 @@ export default function Settings() {
         }
     }, [organization])
 
+    // Handle successful payment redirect
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search)
+        const success = urlParams.get('success')
+        const canceled = urlParams.get('canceled')
+
+        if (success === 'true') {
+            alert('🎉 Payment successful! Your plan has been upgraded.')
+            refreshUser()
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname)
+        }
+
+        if (canceled === 'true') {
+            alert('Payment was cancelled. Your plan has not changed.')
+            window.history.replaceState({}, document.title, window.location.pathname)
+        }
+    }, [refreshUser])
+
     const loadUsage = async () => {
         try {
             const response = await organizationAPI.getUsage(organization.id)
@@ -49,15 +68,51 @@ export default function Settings() {
     }
 
     const handlePlanChange = async (newPlan) => {
-        if (!confirm(`Are you sure you want to switch to the ${newPlan} plan?`)) return
+        if (organization?.plan === newPlan) {
+            alert('You are already on this plan')
+            return
+        }
+
+        // Handle downgrade to free
+        if (newPlan === 'free') {
+            if (!confirm('Are you sure you want to downgrade to the free plan? This will take effect at the end of your billing period.')) {
+                return
+            }
+            try {
+                setLoading(true)
+                await paymentAPI.cancelSubscription()
+                alert('Your subscription will be cancelled at the end of the billing period.')
+                await refreshUser()
+            } catch (error) {
+                console.error('Failed to cancel subscription:', error)
+                alert('Failed to cancel subscription. Please try again.')
+            } finally {
+                setLoading(false)
+            }
+            return
+        }
+
+        // Handle upgrade to paid plans
+        const planNames = {
+            pro: 'Pro ($29/month)',
+            enterprise: 'Enterprise ($99/month)'
+        }
+
+        if (!confirm(`Upgrade to ${planNames[newPlan]}? You will be redirected to Stripe to complete payment.`)) {
+            return
+        }
 
         try {
-            await organizationAPI.updatePlan(organization.id, newPlan)
-            await refreshUser()
-            alert('Plan updated successfully!')
+            setLoading(true)
+            // Create Stripe Checkout session
+            const response = await paymentAPI.createCheckoutSession(newPlan)
+
+            // Redirect to Stripe Checkout
+            window.location.href = response.data.url
         } catch (error) {
-            console.error('Failed to update plan:', error)
-            alert('Failed to update plan')
+            console.error('Failed to create checkout session:', error)
+            alert(error.response?.data?.message || 'Failed to start checkout. Please try again.')
+            setLoading(false)
         }
     }
 

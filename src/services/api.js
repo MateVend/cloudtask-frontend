@@ -79,6 +79,14 @@ export const taskAPI = {
     updateOrder: (tasks) => api.post('/tasks/update-order', { tasks }),
 }
 
+//Payment
+export const paymentAPI = {
+    createCheckoutSession: (plan) => api.post('/payment/create-checkout', { plan }),
+    getSubscription: () => api.get('/payment/subscription'),
+    cancelSubscription: () => api.post('/payment/cancel-subscription'),
+    resumeSubscription: () => api.post('/payment/resume-subscription'),
+}
+
 // Team
 export const teamAPI = {
     getAll: () => api.get('/team'),
