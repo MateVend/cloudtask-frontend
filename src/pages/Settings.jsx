@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { organizationAPI } from '../services/api'
+import { paymentAPI } from '../services/api'
 
 export default function Settings() {
     const { organization, refreshUser } = useApp()
