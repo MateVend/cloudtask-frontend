@@ -290,9 +290,10 @@ export default function Settings() {
                                 ) : (
                                     <button
                                         onClick={() => handlePlanChange(plan.name)}
-                                        className="btn btn-primary w-full"
+                                        disabled={loading}
+                                        className="btn btn-primary w-full disabled:opacity-50"
                                     >
-                                        {organization?.plan === 'free' ? 'Upgrade' : 'Change Plan'}
+                                        {loading ? 'Processing...' : organization?.plan === 'free' ? 'Upgrade' : 'Change Plan'}
                                     </button>
                                 )}
                             </div>
