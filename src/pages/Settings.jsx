@@ -5,7 +5,7 @@ import { organizationAPI } from '../services/api'
 import { paymentAPI } from '../services/api'
 
 export default function Settings() {
-    const { organization, refreshUser } = useApp()
+    const { organization, refreshUser, setOrganization } = useApp()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [usage, setUsage] = useState(null)
@@ -36,9 +36,11 @@ export default function Settings() {
 
             paymentAPI.getSubscription().then((res) => {
                 if (res.data && res.data.organization) {
-                    // Update org in context
-                    refreshUser(); // if refreshUser pulls org too, this is enough
-                    // If not, you may need setOrganization(res.data.organization)
+                    // ✅ Update AppContext with new organization plan
+                    if (typeof setOrganization === "function") {
+                        setOrganization(res.data.organization);
+                    }
+                    refreshUser(); // still refresh user if it updates user info
                 }
             });
 
