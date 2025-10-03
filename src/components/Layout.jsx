@@ -1,6 +1,6 @@
 import { Navigate, Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Layout() {
     const { user, organization, isAuthenticated, loading, logout, switchOrganization } = useApp()
@@ -8,7 +8,74 @@ export default function Layout() {
     const navigate = useNavigate()
     const [showUserMenu, setShowUserMenu] = useState(false)
     const [showOrgMenu, setShowOrgMenu] = useState(false)
+    const [showNotifications, setShowNotifications] = useState(false)
+    const [showNewMenu, setShowNewMenu] = useState(false)
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const [showUpgradeCard, setShowUpgradeCard] = useState(true)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [searchResults, setSearchResults] = useState([])
+    const [showSearchResults, setShowSearchResults] = useState(false)
+
+    // Mock notifications - replace with real data
+    const [notifications, setNotifications] = useState([
+        { id: 1, type: 'task', message: 'New task assigned: Update Dashboard', time: '5 min ago', read: false },
+        { id: 2, type: 'comment', message: 'John commented on your task', time: '1 hour ago', read: false },
+        { id: 3, type: 'complete', message: 'Project "Website" completed', time: '2 hours ago', read: true },
+    ])
+
+    const unreadCount = notifications.filter(n => !n.read).length
+
+    useEffect(() => {
+        // Load saved preference
+        const saved = localStorage.getItem('upgradeCardDismissed')
+        if (saved === 'true') setShowUpgradeCard(false)
+    }, [])
+
+    useEffect(() => {
+        // Close dropdowns when clicking outside
+        const handleClick = () => {
+            setShowUserMenu(false)
+            setShowOrgMenu(false)
+            setShowNotifications(false)
+            setShowNewMenu(false)
+            setShowSearchResults(false)
+        }
+        document.addEventListener('click', handleClick)
+        return () => document.removeEventListener('click', handleClick)
+    }, [])
+
+    // Search functionality
+    useEffect(() => {
+        if (searchQuery.length > 2) {
+            // Mock search - replace with real API call
+            const mockResults = [
+                { type: 'project', name: 'Website Redesign', path: '/projects/1' },
+                { type: 'task', name: 'Update Dashboard UI', path: '/tasks' },
+                { type: 'team', name: 'John Doe', path: '/team' },
+            ].filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+            setSearchResults(mockResults)
+            setShowSearchResults(true)
+        } else {
+            setSearchResults([])
+            setShowSearchResults(false)
+        }
+    }, [searchQuery])
+
+    const handleDismissUpgrade = () => {
+        setShowUpgradeCard(false)
+        localStorage.setItem('upgradeCardDismissed', 'true')
+    }
+
+    const markAllAsRead = () => {
+        setNotifications(notifications.map(n => ({ ...n, read: true })))
+    }
+
+    const handleSearch = (result) => {
+        navigate(result.path)
+        setSearchQuery('')
+        setShowSearchResults(false)
+    }
 
     if (loading) {
         return (
@@ -26,11 +93,17 @@ export default function Layout() {
     }
 
     const navigation = [
-        { name: 'Dashboard', path: '/dashboard', icon: '📊', gradient: 'from-blue-500 to-cyan-500' },
-        { name: 'Projects', path: '/projects', icon: '📁', gradient: 'from-purple-500 to-pink-500' },
-        { name: 'Tasks', path: '/tasks', icon: '✓', gradient: 'from-green-500 to-emerald-500' },
-        { name: 'Team', path: '/team', icon: '👥', gradient: 'from-orange-500 to-red-500' },
-        { name: 'Settings', path: '/settings', icon: '⚙️', gradient: 'from-gray-500 to-slate-500' },
+        { name: 'Dashboard', path: '/dashboard', icon: '📊', badge: null },
+        { name: 'Projects', path: '/projects', icon: '📁', badge: null },
+        { name: 'Tasks', path: '/tasks', icon: '✓', badge: 12 },
+        { name: 'Team', path: '/team', icon: '👥', badge: null },
+        { name: 'Settings', path: '/settings', icon: '⚙️', badge: null },
+    ]
+
+    const quickActions = [
+        { name: 'New Project', icon: '📁', action: () => navigate('/projects') },
+        { name: 'New Task', icon: '✓', action: () => navigate('/tasks') },
+        { name: 'Invite Member', icon: '👥', action: () => navigate('/team') },
     ]
 
     const handleLogout = async () => {
@@ -49,217 +122,356 @@ export default function Layout() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            {/* Sidebar */}
+        <div className="min-h-screen bg-gray-50">
+            {/* Professional Sidebar */}
             <div className={`fixed inset-y-0 left-0 z-50 transition-all duration-300 ${
-                sidebarCollapsed ? 'w-20' : 'w-72'
-            } bg-white border-r border-gray-200 shadow-xl`}>
+                sidebarCollapsed ? 'w-20' : 'w-80'
+            } bg-white shadow-2xl`}>
                 <div className="flex flex-col h-full">
-                    {/* Logo */}
-                    <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+                    {/* Logo & Toggle */}
+                    <div className="h-16 flex items-center justify-between px-6 border-b border-gray-100">
                         {!sidebarCollapsed && (
                             <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg">
                                     <span className="text-white font-bold text-xl">C</span>
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                                        CloudTask
-                                    </h1>
-                                    <p className="text-xs text-gray-500">Pro Edition</p>
+                                    <h1 className="text-lg font-bold text-gray-900">CloudTask</h1>
+                                    <p className="text-xs text-gray-500">Professional</p>
                                 </div>
                             </div>
                         )}
                         <button
                             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         >
-                            <span className="text-xl">{sidebarCollapsed ? '→' : '←'}</span>
+                            <span className="text-gray-600">{sidebarCollapsed ? '→' : '←'}</span>
                         </button>
                     </div>
 
                     {/* Organization Selector */}
-                    <div className={`p-4 border-b border-gray-200 relative ${sidebarCollapsed ? 'px-2' : ''}`}>
-                        <button
-                            onClick={() => setShowOrgMenu(!showOrgMenu)}
-                            className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-all group"
-                        >
-                            <div className="relative">
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-lg group-hover:shadow-xl transition-shadow">
-                                    {organization?.name?.charAt(0)}
-                                </div>
-                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-                            </div>
-                            {!sidebarCollapsed && (
-                                <>
-                                    <div className="flex-1 text-left">
-                                        <div className="font-semibold text-gray-900">{organization?.name}</div>
-                                        <div className="text-xs text-gray-500 capitalize flex items-center">
-                                            <span className="w-2 h-2 rounded-full bg-purple-500 mr-1"></span>
-                                            {organization?.plan} Plan
+                    {!sidebarCollapsed && (
+                        <div className="p-4 border-b border-gray-100">
+                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                    onClick={() => setShowOrgMenu(!showOrgMenu)}
+                                    className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-all group"
+                                >
+                                    <div className="flex items-center space-x-3">
+                                        <div className="relative">
+                                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-md">
+                                                {organization?.name?.charAt(0)}
+                                            </div>
+                                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                        </div>
+                                        <div className="text-left flex-1 min-w-0">
+                                            <div className="font-semibold text-gray-900 truncate">{organization?.name}</div>
+                                            <div className="flex items-center space-x-2">
+                        <span className={`inline-block w-2 h-2 rounded-full ${
+                            organization?.plan === 'free' ? 'bg-gray-400' :
+                                organization?.plan === 'pro' ? 'bg-purple-500' :
+                                    'bg-indigo-600'
+                        }`}></span>
+                                                <span className="text-xs text-gray-500 capitalize">{organization?.plan}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span className="text-gray-400">▼</span>
-                                </>
-                            )}
-                        </button>
+                                    <svg className={`w-4 h-4 text-gray-400 transition-transform ${showOrgMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
 
-                        {showOrgMenu && !sidebarCollapsed && (
-                            <div className="absolute top-full left-4 right-4 mt-2 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 overflow-hidden">
-                                {user?.organizations?.map((org) => (
-                                    <button
-                                        key={org.id}
-                                        onClick={() => handleSwitchOrg(org.id)}
-                                        className={`w-full flex items-center space-x-3 p-4 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 transition-all ${
-                                            org.id === organization?.id ? 'bg-purple-50' : ''
-                                        }`}
-                                    >
-                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-md">
-                                            {org.name.charAt(0)}
+                                {showOrgMenu && (
+                                    <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                                        <div className="max-h-64 overflow-y-auto">
+                                            {user?.organizations?.map((org) => (
+                                                <button
+                                                    key={org.id}
+                                                    onClick={() => handleSwitchOrg(org.id)}
+                                                    className={`w-full flex items-center space-x-3 p-3 hover:bg-gray-50 transition-colors ${
+                                                        org.id === organization?.id ? 'bg-purple-50' : ''
+                                                    }`}
+                                                >
+                                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                                                        {org.name.charAt(0)}
+                                                    </div>
+                                                    <div className="flex-1 text-left min-w-0">
+                                                        <div className="font-medium text-sm text-gray-900 truncate">{org.name}</div>
+                                                        <div className="text-xs text-gray-500">{org.pivot.role}</div>
+                                                    </div>
+                                                    {org.id === organization?.id && (
+                                                        <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                            ))}
                                         </div>
-                                        <div className="flex-1 text-left">
-                                            <div className="font-medium text-gray-900">{org.name}</div>
-                                            <div className="text-xs text-gray-500">{org.pivot.role}</div>
+                                        <div className="border-t border-gray-100 p-2">
+                                            <button className="w-full text-left px-3 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-lg font-medium transition-colors">
+                                                + Create Organization
+                                            </button>
                                         </div>
-                                        {org.id === organization?.id && (
-                                            <span className="text-purple-600 font-bold">✓</span>
-                                        )}
-                                    </button>
-                                ))}
-                                <div className="border-t border-gray-200 p-2">
-                                    <button className="w-full text-left px-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-lg font-medium">
-                                        + Create Organization
-                                    </button>
-                                </div>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    )}
 
                     {/* Navigation */}
-                    <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                    <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                         {navigation.map((item) => {
                             const active = isActive(item.path)
                             return (
                                 <Link
                                     key={item.path}
                                     to={item.path}
-                                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 group relative ${
                                         active
-                                            ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg`
+                                            ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
                                             : 'text-gray-700 hover:bg-gray-100'
                                     } ${sidebarCollapsed ? 'justify-center' : ''}`}
+                                    title={sidebarCollapsed ? item.name : ''}
                                 >
-                  <span className={`text-2xl ${active ? 'scale-110' : 'group-hover:scale-110'} transition-transform`}>
+                  <span className={`text-xl ${active ? '' : 'group-hover:scale-110'} transition-transform`}>
                     {item.icon}
                   </span>
                                     {!sidebarCollapsed && (
-                                        <span className="font-medium">{item.name}</span>
+                                        <>
+                                            <span className="font-medium flex-1">{item.name}</span>
+                                            {item.badge && (
+                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                                    active ? 'bg-white/20 text-white' : 'bg-purple-100 text-purple-600'
+                                                }`}>
+                          {item.badge}
+                        </span>
+                                            )}
+                                        </>
                                     )}
-                                    {!sidebarCollapsed && active && (
-                                        <span className="ml-auto">→</span>
+                                    {sidebarCollapsed && item.badge && (
+                                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                      {item.badge}
+                    </span>
                                     )}
                                 </Link>
                             )
                         })}
                     </nav>
 
-                    {/* Quick Actions */}
-                    {!sidebarCollapsed && (
-                        <div className="p-4 border-t border-gray-200">
-                            <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl p-4 text-white">
-                                <h4 className="font-semibold mb-2">🚀 Upgrade to Pro</h4>
-                                <p className="text-sm text-purple-100 mb-3">Unlock unlimited projects and advanced features</p>
-                                <Link to="/settings" className="block text-center bg-white text-purple-600 rounded-lg py-2 font-semibold hover:bg-gray-100 transition-colors">
-                                    View Plans
-                                </Link>
+                    {/* Upgrade Card */}
+                    {!sidebarCollapsed && showUpgradeCard && organization?.plan === 'free' && (
+                        <div className="p-4">
+                            <div className="relative bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 rounded-2xl p-4 text-white shadow-xl overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+                                <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+
+                                <button
+                                    onClick={handleDismissUpgrade}
+                                    className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
+                                >
+                                    ×
+                                </button>
+
+                                <div className="relative">
+                                    <div className="text-2xl mb-2">🚀</div>
+                                    <h4 className="font-bold mb-1">Upgrade to Pro</h4>
+                                    <p className="text-sm text-purple-100 mb-3">Get unlimited projects and advanced features</p>
+                                    <Link to="/settings" className="block text-center bg-white text-purple-600 rounded-lg py-2 font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+                                        View Plans
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     )}
 
                     {/* User Menu */}
-                    <div className={`p-4 border-t border-gray-200 relative ${sidebarCollapsed ? 'px-2' : ''}`}>
-                        <button
-                            onClick={() => setShowUserMenu(!showUserMenu)}
-                            className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors"
-                        >
-                            <div className="relative">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-lg">
-                                    {user?.name?.charAt(0)}
+                    <div className={`p-4 border-t border-gray-100 ${sidebarCollapsed ? 'px-2' : ''}`}>
+                        <div className="relative" onClick={(e) => e.stopPropagation()}>
+                            <button
+                                onClick={() => setShowUserMenu(!showUserMenu)}
+                                className="w-full flex items-center space-x-3 p-3 rounded-xl hover:bg-gray-100 transition-colors"
+                            >
+                                <div className="relative flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-md">
+                                        {user?.name?.charAt(0)}
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                            </div>
-                            {!sidebarCollapsed && (
-                                <div className="flex-1 text-left">
-                                    <div className="font-medium text-gray-900 text-sm">{user?.name}</div>
-                                    <div className="text-xs text-gray-500">{user?.email}</div>
+                                {!sidebarCollapsed && (
+                                    <div className="flex-1 text-left min-w-0">
+                                        <div className="font-medium text-sm text-gray-900 truncate">{user?.name}</div>
+                                        <div className="text-xs text-gray-500 truncate">{user?.email}</div>
+                                    </div>
+                                )}
+                            </button>
+
+                            {showUserMenu && (
+                                <div className="absolute bottom-full left-0 right-0 mb-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden">
+                                    <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-indigo-50">
+                                        <div className="font-semibold text-gray-900">{user?.name}</div>
+                                        <div className="text-sm text-gray-600">{user?.email}</div>
+                                        <div className="mt-2 text-xs text-gray-500">Last active: Just now</div>
+                                    </div>
+                                    <Link
+                                        to="/settings"
+                                        className="flex items-center space-x-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                                        onClick={() => setShowUserMenu(false)}
+                                    >
+                                        <span>⚙️</span>
+                                        <span className="text-gray-700">Settings</span>
+                                    </Link>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full flex items-center space-x-3 px-4 py-3 hover:bg-red-50 text-red-600 font-medium transition-colors"
+                                    >
+                                        <span>🚪</span>
+                                        <span>Logout</span>
+                                    </button>
                                 </div>
                             )}
-                        </button>
-
-                        {showUserMenu && (
-                            <div className="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
-                                <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-indigo-50">
-                                    <div className="font-semibold text-gray-900">{user?.name}</div>
-                                    <div className="text-sm text-gray-600">{user?.email}</div>
-                                </div>
-                                <Link
-                                    to="/settings"
-                                    className="block px-4 py-3 hover:bg-gray-50 transition-colors"
-                                    onClick={() => setShowUserMenu(false)}
-                                >
-                                    <span className="mr-2">⚙️</span> Settings
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    className="w-full text-left px-4 py-3 hover:bg-red-50 text-red-600 font-medium transition-colors"
-                                >
-                                    <span className="mr-2">🚪</span> Logout
-                                </button>
-                            </div>
-                        )}
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* Main Content */}
-            <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-72'}`}>
+            <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-80'}`}>
                 {/* Top Bar */}
-                <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-200 shadow-sm">
+                <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm">
                     <div className="px-8 py-4 flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">
-                                    {navigation.find(n => isActive(n.path))?.name || 'Dashboard'}
-                                </h2>
-                                <p className="text-sm text-gray-500">
-                                    {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                                </p>
-                            </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-900">
+                                {navigation.find(n => isActive(n.path))?.name || 'Dashboard'}
+                            </h2>
+                            <p className="text-sm text-gray-500">
+                                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                            </p>
                         </div>
 
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-3">
                             {/* Search Bar */}
-                            <div className="relative hidden md:block">
-                                <input
-                                    type="text"
-                                    placeholder="Search projects, tasks..."
-                                    className="pl-10 pr-4 py-2 w-64 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all"
-                                />
-                                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                  🔍
-                </span>
+                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search projects, tasks..."
+                                        className="w-64 pl-10 pr-4 py-2 rounded-xl border border-gray-200 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-gray-50 focus:bg-white"
+                                    />
+                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    🔍
+                  </span>
+                                </div>
+
+                                {showSearchResults && searchResults.length > 0 && (
+                                    <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                                        <div className="p-2 bg-gray-50 border-b border-gray-100">
+                                            <span className="text-xs text-gray-500 font-medium px-2">Search Results</span>
+                                        </div>
+                                        <div className="max-h-96 overflow-y-auto">
+                                            {searchResults.map((result, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => handleSearch(result)}
+                                                    className="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 transition-colors text-left"
+                                                >
+                          <span className="text-2xl">
+                            {result.type === 'project' ? '📁' : result.type === 'task' ? '✓' : '👤'}
+                          </span>
+                                                    <div className="flex-1">
+                                                        <div className="font-medium text-gray-900">{result.name}</div>
+                                                        <div className="text-xs text-gray-500 capitalize">{result.type}</div>
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Notifications */}
-                            <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
-                                <span className="text-2xl">🔔</span>
-                                <div className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-                            </button>
+                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                    onClick={() => setShowNotifications(!showNotifications)}
+                                    className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                                >
+                                    <span className="text-2xl">🔔</span>
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      {unreadCount}
+                    </span>
+                                    )}
+                                </button>
 
-                            {/* Quick Add */}
-                            <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium hover:shadow-lg transition-all">
-                                + New
-                            </button>
+                                {showNotifications && (
+                                    <div className="absolute top-full right-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                                        <div className="p-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-between">
+                                            <h3 className="font-bold">Notifications</h3>
+                                            {unreadCount > 0 && (
+                                                <button
+                                                    onClick={markAllAsRead}
+                                                    className="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-full transition-colors"
+                                                >
+                                                    Mark all read
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="max-h-96 overflow-y-auto">
+                                            {notifications.map((notif) => (
+                                                <div
+                                                    key={notif.id}
+                                                    className={`p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+                                                        !notif.read ? 'bg-purple-50' : ''
+                                                    }`}
+                                                >
+                                                    <div className="flex items-start space-x-3">
+                            <span className="text-2xl">
+                              {notif.type === 'task' ? '✓' : notif.type === 'comment' ? '💬' : '✅'}
+                            </span>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium text-gray-900">{notif.message}</p>
+                                                            <p className="text-xs text-gray-500 mt-1">{notif.time}</p>
+                                                        </div>
+                                                        {!notif.read && (
+                                                            <div className="w-2 h-2 bg-purple-600 rounded-full flex-shrink-0 mt-2"></div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* New Button */}
+                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                    onClick={() => setShowNewMenu(!showNewMenu)}
+                                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center space-x-2"
+                                >
+                                    <span>+ New</span>
+                                </button>
+
+                                {showNewMenu && (
+                                    <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                                        {quickActions.map((action, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => {
+                                                    action.action()
+                                                    setShowNewMenu(false)
+                                                }}
+                                                className="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 transition-colors text-left"
+                                            >
+                                                <span className="text-xl">{action.icon}</span>
+                                                <span className="text-gray-700 font-medium">{action.name}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
