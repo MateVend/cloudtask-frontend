@@ -81,11 +81,13 @@ export const taskAPI = {
 
 //Payment
 export const paymentAPI = {
-    createCheckoutSession: (plan) => api.post('/payment/create-checkout', { plan }),
-    getSubscription: () => api.get('/payment/subscription'),
-    cancelSubscription: () => api.post('/payment/cancel-subscription'),
-    resumeSubscription: () => api.post('/payment/resume-subscription'),
-}
+    createCheckoutSession: (plan) =>
+        api.post("/payment/create-checkout-session", { plan }), // matches createCheckoutSession
+    getSubscription: () => api.get("/payment/get-subscription"), // matches getSubscription
+    cancelSubscription: () => api.post("/payment/cancel-subscription"), // matches cancelSubscription
+    resumeSubscription: () => api.post("/payment/resume-subscription"), // matches resumeSubscription
+};
+
 
 // Team
 export const teamAPI = {

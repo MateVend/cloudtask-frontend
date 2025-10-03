@@ -27,22 +27,30 @@ export default function Settings() {
 
     // Handle successful payment redirect
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search)
-        const success = urlParams.get('success')
-        const canceled = urlParams.get('canceled')
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get("success");
+        const canceled = urlParams.get("canceled");
 
-        if (success === 'true') {
-            alert('🎉 Payment successful! Your plan has been upgraded.')
-            refreshUser()
-            // Clean up URL
-            window.history.replaceState({}, document.title, window.location.pathname)
+        if (success === "true") {
+            alert("🎉 Payment successful! Your plan has been upgraded.");
+
+            paymentAPI.getSubscription().then((res) => {
+                if (res.data && res.data.organization) {
+                    // Update org in context
+                    refreshUser(); // if refreshUser pulls org too, this is enough
+                    // If not, you may need setOrganization(res.data.organization)
+                }
+            });
+
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        if (canceled === 'true') {
-            alert('Payment was cancelled. Your plan has not changed.')
-            window.history.replaceState({}, document.title, window.location.pathname)
+        if (canceled === "true") {
+            alert("Payment was cancelled. Your plan has not changed.");
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
-    }, [refreshUser])
+    }, [refreshUser]);
+
 
     const loadUsage = async () => {
         try {
