@@ -91,6 +91,19 @@ export const paymentAPI = {
     resumeSubscription: () => api.post('/payment/resume-subscription'),
 }
 
+// Search API
+export const searchAPI = {
+    search: (query) => api.get('/search', { params: { q: query } }),
+}
+
+// Notifications API
+export const notificationAPI = {
+    getAll: () => api.get('/notifications'),
+    getUnreadCount: () => api.get('/notifications/unread-count'),
+    markAsRead: (id) => api.post(`/notifications/${id}/read`),
+    markAllAsRead: () => api.post('/notifications/mark-all-read'),
+}
+
 // Team
 export const teamAPI = {
     getAll: () => api.get('/team'),

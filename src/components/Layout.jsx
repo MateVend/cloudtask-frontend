@@ -1,6 +1,9 @@
 import { Navigate, Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { useTheme } from '../context/ThemeContext'
+import { searchAPI, notificationAPI } from '../services/api'
+import '../utils/date'
+import pusher from '../services/pusher'
 import { useState, useEffect } from 'react'
 import { Moon, Sun } from 'lucide-react'
 
@@ -19,14 +22,67 @@ export default function Layout() {
     const [searchResults, setSearchResults] = useState([])
     const [showSearchResults, setShowSearchResults] = useState(false)
 
-    // Mock notifications - replace with real data
-    const [notifications, setNotifications] = useState([
-        { id: 1, type: 'task', message: 'New task assigned: Update Dashboard', time: '5 min ago', read: false },
-        { id: 2, type: 'comment', message: 'John commented on your task', time: '1 hour ago', read: false },
-        { id: 3, type: 'complete', message: 'Project "Website" completed', time: '2 hours ago', read: true },
-    ])
+    //Pusher
+    useEffect(() => {
+        if (!user) return
 
-    const unreadCount = notifications.filter(n => !n.read).length
+        const channel = pusher.subscribe(`user.${user.id}`)
+
+        channel.bind('notification.new', (data) => {
+            setNotifications(prev => [data.notification, ...prev])
+            setUnreadCount(prev => prev + 1)
+        })
+
+        return () => {
+            channel.unbind_all()
+            pusher.unsubscribe(`user.${user.id}`)
+        }
+    }, [user])
+
+    // Fetch notifications - replaced with real data
+    const [notifications, setNotifications] = useState([])
+    const [unreadCount, setUnreadCount] = useState(0)
+
+    useEffect(() => {
+        fetchNotifications()
+        fetchUnreadCount()
+
+        // Poll every 30s for new unread count
+        const interval = setInterval(() => {
+            fetchUnreadCount()
+        }, 30000)
+
+        return () => clearInterval(interval)
+    }, [])
+
+    const fetchNotifications = async () => {
+        try {
+            const response = await notificationAPI.getAll()
+            setNotifications(response.data)
+        } catch (error) {
+            console.error('Failed to fetch notifications:', error)
+        }
+    }
+
+    const fetchUnreadCount = async () => {
+        try {
+            const response = await notificationAPI.getUnreadCount()
+            setUnreadCount(response.data.count)
+        } catch (error) {
+            console.error('Failed to fetch unread count:', error)
+        }
+    }
+
+    const markAllAsRead = async () => {
+        try {
+            await notificationAPI.markAllAsRead()
+            setNotifications(notifications.map(n => ({ ...n, read: true })))
+            setUnreadCount(0)
+        } catch (error) {
+            console.error('Failed to mark as read:', error)
+        }
+    }
+
 
     useEffect(() => {
         const saved = localStorage.getItem('upgradeCardDismissed')
@@ -46,28 +102,34 @@ export default function Layout() {
     }, [])
 
     useEffect(() => {
-        if (searchQuery.length > 2) {
-            const mockResults = [
-                { type: 'project', name: 'Website Redesign', path: '/projects/1' },
-                { type: 'task', name: 'Update Dashboard UI', path: '/tasks' },
-                { type: 'team', name: 'John Doe', path: '/team' },
-            ].filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()))
-
-            setSearchResults(mockResults)
-            setShowSearchResults(true)
-        } else {
-            setSearchResults([])
-            setShowSearchResults(false)
+        const searchData = async () => {
+            if (searchQuery.length > 2) {
+                try {
+                    const response = await searchAPI.search(searchQuery)
+                    setSearchResults(response.data)
+                    setShowSearchResults(true)
+                } catch (error) {
+                    console.error('Search failed:', error)
+                    setSearchResults([])
+                }
+            } else {
+                setSearchResults([])
+                setShowSearchResults(false)
+            }
         }
+
+        // debounce search
+        const timer = setTimeout(() => {
+            searchData()
+        }, 300)
+
+        return () => clearTimeout(timer)
     }, [searchQuery])
+
 
     const handleDismissUpgrade = () => {
         setShowUpgradeCard(false)
         localStorage.setItem('upgradeCardDismissed', 'true')
-    }
-
-    const markAllAsRead = () => {
-        setNotifications(notifications.map(n => ({ ...n, read: true })))
     }
 
     const handleSearch = (result) => {
@@ -123,7 +185,7 @@ export default function Layout() {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
             {/* Professional Sidebar */}
-            <div className={`fixed inset-y-0 left-0 z-50 transition-all duration-300 ${
+            <div className={`fixed inset-y-0 left-0 z-50 transition-all duration-300 no-print ${
                 sidebarCollapsed ? 'w-20' : 'w-80'
             } bg-white dark:bg-gray-800 shadow-2xl dark:shadow-gray-900/50`}>
                 <div className="flex flex-col h-full">
@@ -431,27 +493,52 @@ export default function Layout() {
                                             )}
                                         </div>
                                         <div className="max-h-96 overflow-y-auto">
-                                            {notifications.map((notif) => (
-                                                <div
-                                                    key={notif.id}
-                                                    className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer ${
-                                                        !notif.read ? 'bg-purple-50 dark:bg-purple-900/20' : ''
-                                                    }`}
-                                                >
-                                                    <div className="flex items-start space-x-3">
-                                                        <span className="text-2xl">
-                                                            {notif.type === 'task' ? '✓' : notif.type === 'comment' ? '💬' : '✅'}
-                                                        </span>
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-medium text-gray-900 dark:text-white">{notif.message}</p>
-                                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notif.time}</p>
+                                            {notifications.length > 0 ? (
+                                                notifications.map((notif) => (
+                                                    <div
+                                                        key={notif.id}
+                                                        className={`p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer ${
+                                                            !notif.read ? 'bg-purple-50 dark:bg-purple-900/20' : ''
+                                                        }`}
+                                                        onClick={async () => {
+                                                            if (!notif.read) {
+                                                                try {
+                                                                    await notificationAPI.markAsRead(notif.id)
+                                                                    setNotifications(notifications.map(n =>
+                                                                        n.id === notif.id ? {...n, read: true} : n
+                                                                    ))
+                                                                    setUnreadCount(prev => Math.max(0, prev - 1))
+                                                                } catch (error) {
+                                                                    console.error('Failed to mark as read:', error)
+                                                                }
+                                                            }
+                                                        }}
+                                                    >
+                                                        <div className="flex items-start space-x-3">
+                    <span className="text-2xl">
+                        {notif.type === 'task_assigned' ? '📋' :
+                            notif.type === 'comment_added' ? '💬' :
+                                notif.type === 'task_completed' ? '✅' : '📌'}
+                    </span>
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-sm font-medium text-gray-900 dark:text-white">{notif.message}</p>
+                                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                                    {new Date(notif.created_at).toLocaleString()}
+                                                                </p>
+                                                            </div>
+                                                            {!notif.read && (
+                                                                <div
+                                                                    className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full flex-shrink-0 mt-2"></div>
+                                                            )}
                                                         </div>
-                                                        {!notif.read && (
-                                                            <div className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full flex-shrink-0 mt-2"></div>
-                                                        )}
                                                     </div>
+                                                ))
+                                            ) : (
+                                                <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+                                                    <div className="text-4xl mb-2">🔔</div>
+                                                    <p>No notifications</p>
                                                 </div>
-                                            ))}
+                                            )}
                                         </div>
                                     </div>
                                 )}
@@ -467,7 +554,8 @@ export default function Layout() {
                                 </button>
 
                                 {showNewMenu && (
-                                    <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden">
+                                    <div
+                                        className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden">
                                         {quickActions.map((action, index) => (
                                             <button
                                                 key={index}
@@ -478,7 +566,8 @@ export default function Layout() {
                                                 className="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                                             >
                                                 <span className="text-xl">{action.icon}</span>
-                                                <span className="text-gray-700 dark:text-gray-300 font-medium">{action.name}</span>
+                                                <span
+                                                    className="text-gray-700 dark:text-gray-300 font-medium">{action.name}</span>
                                             </button>
                                         ))}
                                     </div>
