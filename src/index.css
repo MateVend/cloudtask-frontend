@@ -813,3 +813,211 @@ a {
 .typing-indicator span:nth-child(3) {
   animation-delay: 0.4s;
 }
+
+/* ADD TO src/index.css - Dark Mode Styles */
+
+/* Enable dark mode with Tailwind */
+@layer base {
+  /* Light mode (default) */
+  :root {
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f9fafb;
+    --color-bg-tertiary: #f3f4f6;
+    --color-text-primary: #111827;
+    --color-text-secondary: #6b7280;
+    --color-border: #e5e7eb;
+    --color-border-light: #f3f4f6;
+  }
+
+  /* Dark mode */
+  .dark {
+    --color-bg-primary: #1f2937;
+    --color-bg-secondary: #111827;
+    --color-bg-tertiary: #374151;
+    --color-text-primary: #f9fafb;
+    --color-text-secondary: #d1d5db;
+    --color-border: #374151;
+    --color-border-light: #4b5563;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 transition-colors duration-200;
+  }
+
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+}
+
+/* Dark mode component styles */
+.dark .card {
+  @apply bg-gray-800 border-gray-700 shadow-2xl;
+}
+
+.dark .input {
+  @apply bg-gray-800 border-gray-700 text-gray-100 placeholder-gray-500;
+}
+
+.dark .input:focus {
+  @apply ring-purple-500 border-purple-500;
+}
+
+.dark .modal-content {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.dark .modal-overlay {
+  @apply bg-black bg-opacity-70;
+}
+
+/* Sidebar dark mode */
+.dark .sidebar {
+  @apply bg-gray-800 border-gray-700;
+}
+
+/* Navigation dark mode */
+.dark nav a:not(.active) {
+  @apply text-gray-300;
+}
+.dark nav a:not(.active):hover {
+  @apply bg-gray-700;
+}
+
+/* Table dark mode */
+.dark table {
+  @apply bg-gray-800;
+}
+
+.dark thead {
+  @apply bg-gray-900;
+}
+
+.dark tbody tr {
+  @apply border-gray-700;
+}
+.dark tbody tr:hover {
+  @apply bg-gray-750;
+}
+
+/* Dropdown dark mode */
+.dark [class*="dropdown"],
+.dark [class*="menu"] {
+  @apply bg-gray-800 border-gray-700;
+}
+
+/* Button dark mode adjustments */
+.dark .btn-secondary {
+  @apply bg-gray-700 text-gray-200;
+}
+.dark .btn-secondary:hover {
+  @apply bg-gray-600;
+}
+
+/* Badge dark mode */
+.dark .badge {
+  @apply bg-gray-700 text-gray-200;
+}
+
+/* Empty state dark mode */
+.dark .empty-state {
+  @apply bg-gray-800;
+}
+
+/* Stats cards dark mode */
+.dark .stat-card {
+  @apply bg-gray-800 border-gray-700;
+}
+
+/* Kanban board dark mode */
+.dark .kanban-column {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.dark .task-card {
+  @apply bg-gray-750 border-gray-700;
+}
+
+/* Custom scrollbar dark mode */
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #6b21a8, #4f46e5);
+  border-color: #1f2937;
+}
+
+/* Selection dark mode */
+.dark ::selection {
+  background-color: rgba(139, 92, 246, 0.4);
+}
+
+/* Utility classes for theme-aware components */
+.bg-primary {
+  @apply bg-white dark:bg-gray-800;
+}
+
+.bg-secondary {
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+.text-primary {
+  @apply text-gray-900 dark:text-gray-100;
+}
+
+.text-secondary {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.border-primary {
+  @apply border-gray-200 dark:border-gray-700;
+}
+
+.hover-bg-primary {
+  @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+}
+
+/* Smooth theme transition */
+* {
+  @apply transition-colors duration-200;
+}
+
+/* Fix gradient text in dark mode */
+.dark .gradient-text {
+  @apply bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent;
+}
+
+/* Image upload area dark mode */
+.dark .upload-area {
+  @apply bg-gray-800 border-gray-700;
+}
+.dark .upload-area:hover {
+  @apply bg-gray-750 border-purple-500;
+}
+
+/* Add this to your index.css or main CSS file */
+:root {
+  color-scheme: light dark;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+* {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-lg;
+}

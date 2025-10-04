@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { authAPI } from '../services/api'
+import { ThemeProvider } from './ThemeContext'
 
 const AppContext = createContext()
 
@@ -123,5 +124,11 @@ export const AppProvider = ({ children }) => {
         setOrganization,
     }
 
-    return <AppContext.Provider value={value}>{children}</AppContext.Provider>
+    return (
+        <AppContext.Provider value={value}>
+            <ThemeProvider>
+                {children}
+            </ThemeProvider>
+        </AppContext.Provider>
+    )
 }

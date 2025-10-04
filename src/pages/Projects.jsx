@@ -6,8 +6,8 @@ export default function Projects() {
     const [projects, setProjects] = useState([])
     const [loading, setLoading] = useState(true)
     const [showModal, setShowModal] = useState(false)
-    const [view, setView] = useState('grid') // 'grid' or 'list'
-    const [filter, setFilter] = useState('all') // 'all', 'active', 'completed'
+    const [view, setView] = useState('grid')
+    const [filter, setFilter] = useState('all')
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -64,10 +64,10 @@ export default function Projects() {
     }
 
     const statusColors = {
-        active: { bg: 'bg-green-100', text: 'text-green-800', gradient: 'from-green-500 to-emerald-600' },
-        on_hold: { bg: 'bg-yellow-100', text: 'text-yellow-800', gradient: 'from-yellow-500 to-orange-500' },
-        completed: { bg: 'bg-blue-100', text: 'text-blue-800', gradient: 'from-blue-500 to-cyan-500' },
-        archived: { bg: 'bg-gray-100', text: 'text-gray-800', gradient: 'from-gray-400 to-gray-500' },
+        active: { bg: 'bg-green-100 dark:bg-green-900/30', text: 'text-green-800 dark:text-green-300', gradient: 'from-green-500 to-emerald-600' },
+        on_hold: { bg: 'bg-yellow-100 dark:bg-yellow-900/30', text: 'text-yellow-800 dark:text-yellow-300', gradient: 'from-yellow-500 to-orange-500' },
+        completed: { bg: 'bg-blue-100 dark:bg-blue-900/30', text: 'text-blue-800 dark:text-blue-300', gradient: 'from-blue-500 to-cyan-500' },
+        archived: { bg: 'bg-gray-100 dark:bg-gray-700', text: 'text-gray-800 dark:text-gray-300', gradient: 'from-gray-400 to-gray-500' },
     }
 
     const colorOptions = [
@@ -87,7 +87,7 @@ export default function Projects() {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-96">
-                <div className="spinner"></div>
+                <div className="w-12 h-12 border-4 border-purple-600 dark:border-purple-400 border-t-transparent rounded-full animate-spin"></div>
             </div>
         )
     }
@@ -97,13 +97,15 @@ export default function Projects() {
             {/* Header */}
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
-                    <h1 className="text-4xl font-bold gradient-text mb-2">Projects</h1>
-                    <p className="text-gray-600">Manage and track all your projects</p>
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent mb-2">
+                        Projects
+                    </h1>
+                    <p className="text-gray-600 dark:text-gray-400">Manage and track all your projects</p>
                 </div>
 
                 <div className="flex items-center space-x-3">
                     {/* Filter Tabs */}
-                    <div className="flex bg-white rounded-lg shadow-md p-1">
+                    <div className="flex bg-white dark:bg-gray-800 rounded-lg shadow-md p-1 border border-gray-200 dark:border-gray-700">
                         {['all', 'active', 'completed'].map((f) => (
                             <button
                                 key={f}
@@ -111,7 +113,7 @@ export default function Projects() {
                                 className={`px-4 py-2 rounded-md font-medium transition-all ${
                                     filter === f
                                         ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
-                                        : 'text-gray-600 hover:text-gray-900'
+                                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                                 }`}
                             >
                                 {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -120,22 +122,22 @@ export default function Projects() {
                     </div>
 
                     {/* View Toggle */}
-                    <div className="flex bg-white rounded-lg shadow-md p-1">
+                    <div className="flex bg-white dark:bg-gray-800 rounded-lg shadow-md p-1 border border-gray-200 dark:border-gray-700">
                         <button
                             onClick={() => setView('grid')}
-                            className={`p-2 rounded ${view === 'grid' ? 'bg-purple-100 text-purple-600' : 'text-gray-600'}`}
+                            className={`p-2 rounded ${view === 'grid' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-400'}`}
                         >
                             <span className="text-xl">▦</span>
                         </button>
                         <button
                             onClick={() => setView('list')}
-                            className={`p-2 rounded ${view === 'list' ? 'bg-purple-100 text-purple-600' : 'text-gray-600'}`}
+                            className={`p-2 rounded ${view === 'list' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'text-gray-600 dark:text-gray-400'}`}
                         >
                             <span className="text-xl">☰</span>
                         </button>
                     </div>
 
-                    <button onClick={() => setShowModal(true)} className="btn btn-primary shadow-xl">
+                    <button onClick={() => setShowModal(true)} className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold shadow-xl transition-all">
                         + New Project
                     </button>
                 </div>
@@ -165,15 +167,15 @@ export default function Projects() {
 
             {/* Projects Grid/List */}
             {filteredProjects.length === 0 ? (
-                <div className="empty-state bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-dashed border-purple-300">
-                    <div className="empty-state-icon">📁</div>
-                    <h3 className="empty-state-title">No projects yet</h3>
-                    <p className="empty-state-description">
+                <div className="text-center py-12 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-700">
+                    <div className="text-6xl mb-4">📁</div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No projects yet</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
                         {filter !== 'all'
                             ? `No ${filter} projects found. Try changing the filter.`
                             : 'Create your first project to get started'}
                     </p>
-                    <button onClick={() => setShowModal(true)} className="btn btn-primary">
+                    <button onClick={() => setShowModal(true)} className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg">
                         <span className="mr-2">+</span> Create Project
                     </button>
                 </div>
@@ -183,10 +185,10 @@ export default function Projects() {
                         <Link
                             key={project.id}
                             to={`/projects/${project.id}`}
-                            className="group block animate-slide-in"
+                            className="group block"
                             style={{ animationDelay: `${index * 50}ms` }}
                         >
-                            <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-gray-100 hover:border-purple-300 transform hover:-translate-y-2">
+                            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl dark:shadow-gray-900/50 transition-all duration-300 overflow-hidden border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 transform hover:-translate-y-2">
                                 {/* Project Header with Gradient */}
                                 <div className={`p-6 bg-gradient-to-br ${colorOptions.find(c => c.value === project.color)?.gradient || 'from-purple-500 to-indigo-600'}`}>
                                     <div className="flex items-start justify-between mb-4">
@@ -214,10 +216,10 @@ export default function Projects() {
                                 {/* Project Body */}
                                 <div className="p-6">
                                     <div className="flex items-center justify-between mb-4">
-                    <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusColors[project.status].bg} ${statusColors[project.status].text}`}>
-                      {project.status.replace('_', ' ').toUpperCase()}
-                    </span>
-                                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                                        <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusColors[project.status].bg} ${statusColors[project.status].text}`}>
+                                            {project.status.replace('_', ' ').toUpperCase()}
+                                        </span>
+                                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                                             <span>✓</span>
                                             <span className="font-medium">{project.tasks_count || 0} tasks</span>
                                         </div>
@@ -226,12 +228,12 @@ export default function Projects() {
                                     {/* Progress Bar */}
                                     <div className="mb-4">
                                         <div className="flex items-center justify-between text-sm mb-2">
-                                            <span className="text-gray-600 font-medium">Progress</span>
-                                            <span className="font-bold text-gray-900">{project.progress}%</span>
+                                            <span className="text-gray-600 dark:text-gray-400 font-medium">Progress</span>
+                                            <span className="font-bold text-gray-900 dark:text-white">{project.progress}%</span>
                                         </div>
-                                        <div className="progress-bar">
+                                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                                             <div
-                                                className={`progress-bar-fill bg-gradient-to-r ${colorOptions.find(c => c.value === project.color)?.gradient || 'from-purple-500 to-indigo-600'}`}
+                                                className={`h-3 rounded-full bg-gradient-to-r ${colorOptions.find(c => c.value === project.color)?.gradient || 'from-purple-500 to-indigo-600'} transition-all`}
                                                 style={{ width: `${project.progress}%` }}
                                             ></div>
                                         </div>
@@ -239,25 +241,25 @@ export default function Projects() {
 
                                     {/* Team Avatars */}
                                     <div className="flex items-center justify-between">
-                                        <div className="avatar-group">
+                                        <div className="flex -space-x-2">
                                             {project.users?.slice(0, 4).map((user, idx) => (
                                                 <div
                                                     key={user.id}
-                                                    className="avatar"
+                                                    className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white dark:border-gray-800"
                                                     title={user.name}
                                                 >
                                                     {user.name.charAt(0)}
                                                 </div>
                                             ))}
                                             {project.users?.length > 4 && (
-                                                <div className="avatar bg-gray-400">
+                                                <div className="w-8 h-8 rounded-full bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white dark:border-gray-800">
                                                     +{project.users.length - 4}
                                                 </div>
                                             )}
                                         </div>
-                                        <span className="text-purple-600 font-semibold text-sm group-hover:translate-x-1 transition-transform">
-                      View →
-                    </span>
+                                        <span className="text-purple-600 dark:text-purple-400 font-semibold text-sm group-hover:translate-x-1 transition-transform">
+                                            View →
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -266,7 +268,7 @@ export default function Projects() {
                 </div>
             ) : (
                 /* List View */
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                     <table className="w-full">
                         <thead className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
                         <tr>
@@ -279,51 +281,51 @@ export default function Projects() {
                         </tr>
                         </thead>
                         <tbody>
-                        {filteredProjects.map((project, index) => (
-                            <tr key={project.id} className="border-b border-gray-100 hover:bg-purple-50 transition-colors">
+                        {filteredProjects.map((project) => (
+                            <tr key={project.id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
                                 <td className="py-4 px-6">
                                     <Link to={`/projects/${project.id}`} className="flex items-center space-x-3 group">
                                         <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colorOptions.find(c => c.value === project.color)?.gradient || 'from-purple-500 to-indigo-600'} flex items-center justify-center text-white font-bold shadow-lg`}>
                                             {project.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <div className="font-bold text-gray-900 group-hover:text-purple-600 transition-colors">
+                                            <div className="font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                                                 {project.name}
                                             </div>
-                                            <div className="text-sm text-gray-500 line-clamp-1">
+                                            <div className="text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
                                                 {project.description || 'No description'}
                                             </div>
                                         </div>
                                     </Link>
                                 </td>
                                 <td className="py-4 px-6">
-                    <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusColors[project.status].bg} ${statusColors[project.status].text}`}>
-                      {project.status.replace('_', ' ').toUpperCase()}
-                    </span>
+                                    <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusColors[project.status].bg} ${statusColors[project.status].text}`}>
+                                        {project.status.replace('_', ' ').toUpperCase()}
+                                    </span>
                                 </td>
                                 <td className="py-4 px-6">
                                     <div className="flex items-center space-x-3">
-                                        <div className="flex-1 progress-bar">
+                                        <div className="flex-1 w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                                             <div
-                                                className={`progress-bar-fill bg-gradient-to-r ${colorOptions.find(c => c.value === project.color)?.gradient || 'from-purple-500 to-indigo-600'}`}
+                                                className={`h-3 rounded-full bg-gradient-to-r ${colorOptions.find(c => c.value === project.color)?.gradient || 'from-purple-500 to-indigo-600'}`}
                                                 style={{ width: `${project.progress}%` }}
                                             ></div>
                                         </div>
-                                        <span className="text-sm font-bold text-gray-700">{project.progress}%</span>
+                                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{project.progress}%</span>
                                     </div>
                                 </td>
                                 <td className="py-4 px-6">
-                                    <span className="text-gray-700 font-medium">{project.tasks_count || 0}</span>
+                                    <span className="text-gray-700 dark:text-gray-300 font-medium">{project.tasks_count || 0}</span>
                                 </td>
                                 <td className="py-4 px-6">
-                                    <div className="avatar-group">
+                                    <div className="flex -space-x-2">
                                         {project.users?.slice(0, 3).map((user) => (
-                                            <div key={user.id} className="avatar" title={user.name}>
+                                            <div key={user.id} className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white dark:border-gray-800" title={user.name}>
                                                 {user.name.charAt(0)}
                                             </div>
                                         ))}
                                         {project.users?.length > 3 && (
-                                            <div className="avatar bg-gray-400">
+                                            <div className="w-8 h-8 rounded-full bg-gray-400 dark:bg-gray-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white dark:border-gray-800">
                                                 +{project.users.length - 3}
                                             </div>
                                         )}
@@ -332,7 +334,7 @@ export default function Projects() {
                                 <td className="py-4 px-6">
                                     <button
                                         onClick={() => handleDelete(project.id)}
-                                        className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                        className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                                     >
                                         🗑️
                                     </button>
@@ -346,8 +348,8 @@ export default function Projects() {
 
             {/* Create Project Modal */}
             {showModal && (
-                <div className="modal-overlay" onClick={() => setShowModal(false)}>
-                    <div className="modal-content max-w-2xl" onClick={(e) => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
+                    <div className="bg-white dark:bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
                         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white rounded-t-2xl">
                             <h2 className="text-3xl font-bold">Create New Project</h2>
                             <p className="text-purple-100 mt-1">Start your next big thing</p>
@@ -355,23 +357,23 @@ export default function Projects() {
 
                         <form onSubmit={handleSubmit} className="p-6 space-y-6">
                             <div>
-                                <label className="label">Project Name *</label>
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Project Name *</label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="input focus-ring"
+                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
                                     placeholder="My Awesome Project"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="label">Description</label>
+                                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Description</label>
                                 <textarea
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    className="input focus-ring"
+                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all resize-none"
                                     rows="4"
                                     placeholder="What is this project about?"
                                 ></textarea>
@@ -379,7 +381,7 @@ export default function Projects() {
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
-                                    <label className="label">Project Color</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Project Color</label>
                                     <div className="grid grid-cols-3 gap-3">
                                         {colorOptions.map((color) => (
                                             <button
@@ -387,13 +389,13 @@ export default function Projects() {
                                                 type="button"
                                                 onClick={() => setFormData({ ...formData, color: color.value })}
                                                 className={`relative h-16 rounded-xl bg-gradient-to-br ${color.gradient} shadow-lg hover:scale-110 transition-transform ${
-                                                    formData.color === color.value ? 'ring-4 ring-purple-500 ring-offset-2' : ''
+                                                    formData.color === color.value ? 'ring-4 ring-purple-500 ring-offset-2 dark:ring-offset-gray-800' : ''
                                                 }`}
                                             >
                                                 {formData.color === color.value && (
                                                     <span className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold">
-                            ✓
-                          </span>
+                                                        ✓
+                                                    </span>
                                                 )}
                                             </button>
                                         ))}
@@ -401,11 +403,11 @@ export default function Projects() {
                                 </div>
 
                                 <div>
-                                    <label className="label">Status</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Status</label>
                                     <select
                                         value={formData.status}
                                         onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                        className="input focus-ring"
+                                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
                                     >
                                         <option value="active">Active</option>
                                         <option value="on_hold">On Hold</option>
@@ -417,35 +419,35 @@ export default function Projects() {
 
                             <div className="grid grid-cols-2 gap-6">
                                 <div>
-                                    <label className="label">Start Date</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
                                     <input
                                         type="date"
                                         value={formData.start_date}
                                         onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                                        className="input focus-ring"
+                                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="label">End Date</label>
+                                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
                                     <input
                                         type="date"
                                         value={formData.end_date}
                                         onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                                        className="input focus-ring"
+                                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                            <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 dark:border-gray-700">
                                 <button
                                     type="button"
                                     onClick={() => setShowModal(false)}
-                                    className="btn btn-secondary"
+                                    className="px-6 py-3 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-xl font-semibold transition-all"
                                 >
                                     Cancel
                                 </button>
-                                <button type="submit" className="btn btn-primary shadow-xl">
+                                <button type="submit" className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-xl">
                                     <span className="mr-2">✨</span> Create Project
                                 </button>
                             </div>
