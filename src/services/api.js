@@ -55,6 +55,10 @@ export const organizationAPI = {
     delete: (id) => api.delete(`/organizations/${id}`),
     updatePlan: (id, plan) => api.post(`/organizations/${id}/update-plan`, { plan }),
     getUsage: (id) => api.get(`/organizations/${id}/usage`),
+    uploadLogo: (id, formData) =>
+        api.post(`/organizations/${id}/logo`, formData, {
+            headers: {"Content-Type": "multipart/form-data"},
+        }),
 }
 
 // Projects

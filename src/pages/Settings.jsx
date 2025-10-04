@@ -567,7 +567,7 @@ export default function Settings() {
                                                 }`}
                                             >
                                                 {plan.popular && (
-                                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-white text-sm">
                                                         <span className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs px-6 py-2 rounded-full font-bold shadow-lg animate-pulse">
                                                             ⭐ MOST POPULAR
                                                         </span>

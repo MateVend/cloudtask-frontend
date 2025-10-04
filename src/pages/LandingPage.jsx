@@ -1,9 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { useTheme } from '../context/ThemeContext'
 import { useEffect, useState } from 'react'
+import { Moon, Sun } from 'lucide-react'
 
 export default function LandingPage() {
     const { isAuthenticated } = useApp()
+    const { theme, toggleTheme } = useTheme()
     const navigate = useNavigate()
     const [scrolled, setScrolled] = useState(false)
 
@@ -20,34 +23,44 @@ export default function LandingPage() {
     }, [isAuthenticated, navigate])
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors">
             {/* Navigation */}
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-                scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
+                scrolled ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg' : 'bg-transparent'
             }`}>
                 <div className="max-w-7xl mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg">
                                 <span className="text-white font-bold text-xl">C</span>
                             </div>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                CloudTask Pro
-              </span>
+                            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                                CloudTask Pro
+                            </span>
                         </div>
 
                         <div className="hidden md:flex items-center space-x-8">
-                            <a href="#features" className="text-gray-700 hover:text-purple-600 transition-colors">Features</a>
-                            <a href="#pricing" className="text-gray-700 hover:text-purple-600 transition-colors">Pricing</a>
-                            <a href="#testimonials" className="text-gray-700 hover:text-purple-600 transition-colors">Testimonials</a>
-                            <a href="#faq" className="text-gray-700 hover:text-purple-600 transition-colors">FAQ</a>
+                            <a href="#features" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Features</a>
+                            <a href="#pricing" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Pricing</a>
+                            <a href="#testimonials" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Testimonials</a>
                         </div>
 
                         <div className="flex items-center space-x-4">
-                            <Link to="/login" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                            >
+                                {theme === 'light' ? (
+                                    <Moon className="w-5 h-5 text-gray-700" />
+                                ) : (
+                                    <Sun className="w-5 h-5 text-yellow-400" />
+                                )}
+                            </button>
+                            <Link to="/login" className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium transition-colors">
                                 Sign In
                             </Link>
-                            <Link to="/register" className="btn btn-primary">
+                            <Link to="/register" className="px-6 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-semibold transition-all shadow-lg">
                                 Get Started Free
                             </Link>
                         </div>
@@ -57,45 +70,45 @@ export default function LandingPage() {
 
             {/* Hero Section */}
             <div className="relative pt-32 pb-20 px-6 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-indigo-50"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-purple-900/20"></div>
 
                 {/* Animated Background Elements */}
-                <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-                <div className="absolute top-40 right-10 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+                <div className="absolute top-20 left-10 w-72 h-72 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-10 animate-blob"></div>
+                <div className="absolute top-40 right-10 w-72 h-72 bg-indigo-300 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-10 animate-blob animation-delay-2000"></div>
+                <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-normal filter blur-xl opacity-20 dark:opacity-10 animate-blob animation-delay-4000"></div>
 
                 <div className="relative max-w-7xl mx-auto">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <div className="animate-slide-in">
-                            <div className="inline-block mb-4 px-4 py-2 bg-purple-100 rounded-full">
-                                <span className="text-purple-700 font-semibold text-sm">🚀 Now with AI-powered insights</span>
+                        <div>
+                            <div className="inline-block mb-4 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                                <span className="text-purple-700 dark:text-purple-300 font-semibold text-sm">🚀 Now with AI-powered insights</span>
                             </div>
 
                             <h1 className="text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                  Manage Projects
-                </span>
+                                <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 dark:from-purple-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                                    Manage Projects
+                                </span>
                                 <br />
-                                Like a Pro
+                                <span className="text-gray-900 dark:text-white">Like a Pro</span>
                             </h1>
 
-                            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
                                 The all-in-one project management solution trusted by over 10,000 teams worldwide.
                                 Collaborate, track, and deliver projects faster than ever.
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                                <Link to="/register" className="btn btn-primary text-lg px-8 py-4 shadow-lg hover:shadow-xl">
+                                <Link to="/register" className="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold text-lg shadow-xl transition-all text-center">
                                     Start Free Trial
                                     <span className="ml-2">→</span>
                                 </Link>
-                                <button className="btn btn-secondary text-lg px-8 py-4">
+                                <button className="px-8 py-4 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl font-semibold text-lg transition-all">
                                     Watch Demo
                                     <span className="ml-2">▶</span>
                                 </button>
                             </div>
 
-                            <div className="flex items-center space-x-6 text-sm text-gray-600">
+                            <div className="flex items-center space-x-6 text-sm text-gray-600 dark:text-gray-400">
                                 <div className="flex items-center">
                                     <span className="text-yellow-500 mr-1">★★★★★</span>
                                     <span>4.9/5 (1,200 reviews)</span>
@@ -104,17 +117,16 @@ export default function LandingPage() {
                             </div>
                         </div>
 
-                        <div className="relative animate-slide-in animation-delay-200">
-                            <div className="relative bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
+                        <div className="relative">
+                            <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700">
                                 <div className="space-y-4">
-                                    {/* Mock Dashboard Preview */}
-                                    <div className="flex items-center justify-between pb-4 border-b">
-                                        <h3 className="font-semibold">Recent Projects</h3>
-                                        <span className="text-purple-600 text-sm">View all →</span>
+                                    <div className="flex items-center justify-between pb-4 border-b border-gray-200 dark:border-gray-700">
+                                        <h3 className="font-semibold text-gray-900 dark:text-white">Recent Projects</h3>
+                                        <span className="text-purple-600 dark:text-purple-400 text-sm">View all →</span>
                                     </div>
 
                                     {[1, 2, 3].map((i) => (
-                                        <div key={i} className="p-4 rounded-lg bg-gray-50 hover:bg-purple-50 transition-colors cursor-pointer">
+                                        <div key={i} className="p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors cursor-pointer">
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center space-x-3">
                                                     <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${
@@ -125,21 +137,23 @@ export default function LandingPage() {
                                                         {['W', 'M', 'D'][i-1]}
                                                     </div>
                                                     <div>
-                                                        <div className="font-medium">
+                                                        <div className="font-medium text-gray-900 dark:text-white">
                                                             {['Website Redesign', 'Mobile App', 'Dashboard'][i-1]}
                                                         </div>
-                                                        <div className="text-xs text-gray-500">
+                                                        <div className="text-xs text-gray-500 dark:text-gray-400">
                                                             {['12 tasks', '8 tasks', '15 tasks'][i-1]}
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div className={`text-xs font-semibold ${
-                                                    i === 1 ? 'text-green-600' : i === 2 ? 'text-blue-600' : 'text-orange-600'
+                                                    i === 1 ? 'text-green-600 dark:text-green-400' :
+                                                        i === 2 ? 'text-blue-600 dark:text-blue-400' :
+                                                            'text-orange-600 dark:text-orange-400'
                                                 }`}>
                                                     {[75, 45, 90][i-1]}%
                                                 </div>
                                             </div>
-                                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
                                                 <div className={`h-2 rounded-full bg-gradient-to-r ${
                                                     i === 1 ? 'from-purple-500 to-indigo-600' :
                                                         i === 2 ? 'from-blue-500 to-cyan-600' :
@@ -152,14 +166,14 @@ export default function LandingPage() {
                             </div>
 
                             {/* Floating Stats */}
-                            <div className="absolute -top-6 -right-6 bg-white rounded-xl shadow-lg p-4 border border-purple-200">
-                                <div className="text-2xl font-bold text-purple-600">2.5K+</div>
-                                <div className="text-xs text-gray-600">Tasks Completed</div>
+                            <div className="absolute -top-6 -right-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 border border-purple-200 dark:border-purple-700">
+                                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">2.5K+</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-400">Tasks Completed</div>
                             </div>
 
-                            <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-4 border border-indigo-200">
-                                <div className="text-2xl font-bold text-indigo-600">98%</div>
-                                <div className="text-xs text-gray-600">Client Satisfaction</div>
+                            <div className="absolute -bottom-6 -left-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 border border-indigo-200 dark:border-indigo-700">
+                                <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">98%</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-400">Client Satisfaction</div>
                             </div>
                         </div>
                     </div>
@@ -167,23 +181,23 @@ export default function LandingPage() {
             </div>
 
             {/* Trusted By Section */}
-            <div className="py-12 bg-gray-50">
+            <div className="py-12 bg-gray-50 dark:bg-gray-800/50">
                 <div className="max-w-7xl mx-auto px-6">
-                    <p className="text-center text-gray-600 mb-8 font-medium">Trusted by leading companies worldwide</p>
+                    <p className="text-center text-gray-600 dark:text-gray-400 mb-8 font-medium">Trusted by leading companies worldwide</p>
                     <div className="flex flex-wrap justify-center items-center gap-12 opacity-50">
                         {['Google', 'Microsoft', 'Amazon', 'Meta', 'Netflix', 'Shopify'].map((company) => (
-                            <div key={company} className="text-2xl font-bold text-gray-400">{company}</div>
+                            <div key={company} className="text-2xl font-bold text-gray-400 dark:text-gray-500">{company}</div>
                         ))}
                     </div>
                 </div>
             </div>
 
             {/* Features Section */}
-            <div id="features" className="py-20 px-6 bg-white">
+            <div id="features" className="py-20 px-6 bg-white dark:bg-gray-900">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-5xl font-bold mb-4">Everything you need to succeed</h2>
-                        <p className="text-xl text-gray-600">Powerful features to help your team work smarter</p>
+                        <h2 className="text-5xl font-bold mb-4 text-gray-900 dark:text-white">Everything you need to succeed</h2>
+                        <p className="text-xl text-gray-600 dark:text-gray-400">Powerful features to help your team work smarter</p>
                     </div>
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -198,10 +212,10 @@ export default function LandingPage() {
                             { icon: '📈', title: 'Custom Reports', desc: 'Generate detailed reports in seconds' },
                             { icon: '🔄', title: 'Integrations', desc: 'Connect with 1000+ apps you already use' },
                         ].map((feature, i) => (
-                            <div key={i} className="group p-8 rounded-2xl border-2 border-gray-100 hover:border-purple-300 hover:shadow-xl transition-all duration-300 cursor-pointer">
+                            <div key={i} className="group p-8 rounded-2xl border-2 border-gray-100 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-xl transition-all duration-300 cursor-pointer bg-white dark:bg-gray-800">
                                 <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{feature.icon}</div>
-                                <h3 className="text-xl font-bold mb-3 group-hover:text-purple-600 transition-colors">{feature.title}</h3>
-                                <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
+                                <h3 className="text-xl font-bold mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-gray-900 dark:text-white">{feature.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -209,7 +223,7 @@ export default function LandingPage() {
             </div>
 
             {/* Stats Section */}
-            <div className="py-20 bg-gradient-to-br from-purple-600 to-indigo-600 text-white">
+            <div className="py-20 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid md:grid-cols-4 gap-8 text-center">
                         {[
@@ -228,11 +242,11 @@ export default function LandingPage() {
             </div>
 
             {/* Pricing Section */}
-            <div id="pricing" className="py-20 px-6 bg-gray-50">
+            <div id="pricing" className="py-20 px-6 bg-gray-50 dark:bg-gray-800/50">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-5xl font-bold mb-4">Simple, Transparent Pricing</h2>
-                        <p className="text-xl text-gray-600">Choose the plan that fits your needs</p>
+                        <h2 className="text-5xl font-bold mb-4 text-gray-900 dark:text-white">Simple, Transparent Pricing</h2>
+                        <p className="text-xl text-gray-600 dark:text-gray-400">Choose the plan that fits your needs</p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -265,7 +279,7 @@ export default function LandingPage() {
                             <div key={i} className={`relative rounded-2xl p-8 ${
                                 plan.popular
                                     ? 'bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow-2xl scale-105'
-                                    : 'bg-white border-2 border-gray-200'
+                                    : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700'
                             }`}>
                                 {plan.popular && (
                                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-purple-900 px-4 py-1 rounded-full text-sm font-bold">
@@ -274,16 +288,16 @@ export default function LandingPage() {
                                 )}
 
                                 <div className="text-center mb-8">
-                                    <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                                    <h3 className={`text-2xl font-bold mb-2 ${!plan.popular && 'text-gray-900 dark:text-white'}`}>{plan.name}</h3>
                                     <div className="text-5xl font-bold mb-2">{plan.price}</div>
-                                    <div className={plan.popular ? 'text-purple-200' : 'text-gray-500'}>{plan.period}</div>
+                                    <div className={plan.popular ? 'text-purple-200' : 'text-gray-500 dark:text-gray-400'}>{plan.period}</div>
                                 </div>
 
                                 <ul className="space-y-4 mb-8">
                                     {plan.features.map((feature, idx) => (
                                         <li key={idx} className="flex items-center">
                                             <span className={`mr-3 ${plan.popular ? 'text-white' : 'text-green-500'}`}>✓</span>
-                                            <span className={plan.popular ? 'text-white' : 'text-gray-700'}>{feature}</span>
+                                            <span className={plan.popular ? 'text-white' : 'text-gray-700 dark:text-gray-300'}>{feature}</span>
                                         </li>
                                     ))}
                                 </ul>
@@ -305,11 +319,11 @@ export default function LandingPage() {
             </div>
 
             {/* Testimonials */}
-            <div id="testimonials" className="py-20 px-6 bg-white">
+            <div id="testimonials" className="py-20 px-6 bg-white dark:bg-gray-900">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-5xl font-bold mb-4">Loved by thousands of teams</h2>
-                        <p className="text-xl text-gray-600">See what our customers have to say</p>
+                        <h2 className="text-5xl font-bold mb-4 text-gray-900 dark:text-white">Loved by thousands of teams</h2>
+                        <p className="text-xl text-gray-600 dark:text-gray-400">See what our customers have to say</p>
                     </div>
 
                     <div className="grid md:grid-cols-3 gap-8">
@@ -318,16 +332,16 @@ export default function LandingPage() {
                             { name: 'Michael Chen', role: 'Product Manager, DesignCo', quote: 'The best project management tool I\'ve ever used. Intuitive and powerful.' },
                             { name: 'Emily Rodriguez', role: 'Team Lead, MarketingPro', quote: 'Finally, a tool that our entire team actually enjoys using. Game changer!' },
                         ].map((testimonial, i) => (
-                            <div key={i} className="p-8 rounded-2xl bg-gray-50 hover:shadow-xl transition-all">
+                            <div key={i} className="p-8 rounded-2xl bg-gray-50 dark:bg-gray-800 hover:shadow-xl transition-all border border-gray-200 dark:border-gray-700">
                                 <div className="text-yellow-500 text-2xl mb-4">★★★★★</div>
-                                <p className="text-gray-700 mb-6 italic">"{testimonial.quote}"</p>
+                                <p className="text-gray-700 dark:text-gray-300 mb-6 italic">"{testimonial.quote}"</p>
                                 <div className="flex items-center">
                                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-bold mr-4">
                                         {testimonial.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <div className="font-semibold">{testimonial.name}</div>
-                                        <div className="text-sm text-gray-600">{testimonial.role}</div>
+                                        <div className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</div>
                                     </div>
                                 </div>
                             </div>
@@ -337,11 +351,11 @@ export default function LandingPage() {
             </div>
 
             {/* CTA Section */}
-            <div className="py-20 px-6 bg-gradient-to-br from-purple-600 to-indigo-600 text-white">
+            <div className="py-20 px-6 bg-gradient-to-br from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 text-white">
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-5xl font-bold mb-6">Ready to get started?</h2>
                     <p className="text-xl mb-8 text-purple-100">Join thousands of teams already using CloudTask Pro</p>
-                    <Link to="/register" className="btn bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-4 inline-block">
+                    <Link to="/register" className="inline-block px-8 py-4 bg-white text-purple-600 hover:bg-gray-100 text-lg rounded-xl font-semibold transition-all shadow-xl">
                         Start Your Free Trial →
                     </Link>
                     <p className="mt-4 text-purple-200">No credit card required • 14-day free trial • Cancel anytime</p>
@@ -349,7 +363,7 @@ export default function LandingPage() {
             </div>
 
             {/* Footer */}
-            <footer className="bg-gray-900 text-white py-12">
+            <footer className="bg-gray-900 dark:bg-gray-950 text-white py-12">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid md:grid-cols-4 gap-8 mb-8">
                         <div>
@@ -365,29 +379,29 @@ export default function LandingPage() {
                         <div>
                             <h4 className="font-semibold mb-4">Product</h4>
                             <ul className="space-y-2 text-gray-400">
-                                <li><a href="#" className="hover:text-white">Features</a></li>
-                                <li><a href="#" className="hover:text-white">Pricing</a></li>
-                                <li><a href="#" className="hover:text-white">Security</a></li>
-                                <li><a href="#" className="hover:text-white">Roadmap</a></li>
+                                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+                                <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Roadmap</a></li>
                             </ul>
                         </div>
 
                         <div>
                             <h4 className="font-semibold mb-4">Company</h4>
                             <ul className="space-y-2 text-gray-400">
-                                <li><a href="#" className="hover:text-white">About</a></li>
-                                <li><a href="#" className="hover:text-white">Blog</a></li>
-                                <li><a href="#" className="hover:text-white">Careers</a></li>
-                                <li><a href="#" className="hover:text-white">Contact</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
                             </ul>
                         </div>
 
                         <div>
                             <h4 className="font-semibold mb-4">Legal</h4>
                             <ul className="space-y-2 text-gray-400">
-                                <li><a href="#" className="hover:text-white">Privacy</a></li>
-                                <li><a href="#" className="hover:text-white">Terms</a></li>
-                                <li><a href="#" className="hover:text-white">Security</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Terms</a></li>
+                                <li><a href="#" className="hover:text-white transition-colors">Security</a></li>
                             </ul>
                         </div>
                     </div>
