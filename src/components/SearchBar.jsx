@@ -13,6 +13,13 @@ export default function SearchBar({ onSearch, placeholder = 'Search...' }) {
         onSearch('')
     }
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            onSearch(query) // perform search when pressing Enter
+        }
+    }
+
     return (
         <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -21,7 +28,8 @@ export default function SearchBar({ onSearch, placeholder = 'Search...' }) {
             <input
                 type="text"
                 value={query}
-                onChange={(e) => handleSearch(e.target.value)}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder={placeholder}
                 className="input pl-10 pr-10"
             />

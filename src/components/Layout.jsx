@@ -2,10 +2,9 @@ import { Navigate, Outlet, Link, useLocation, useNavigate } from 'react-router-d
 import { useApp } from '../context/AppContext'
 import { useTheme } from '../context/ThemeContext'
 import { searchAPI, notificationAPI } from '../services/api'
-import '../utils/date'
 import pusher from '../services/pusher'
 import { useState, useEffect } from 'react'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, Menu, X, Search, Bell, Plus } from 'lucide-react'
 
 export default function Layout() {
     const { user, organization, isAuthenticated, loading, logout, switchOrganization } = useApp()
@@ -17,41 +16,34 @@ export default function Layout() {
     const [showNotifications, setShowNotifications] = useState(false)
     const [showNewMenu, setShowNewMenu] = useState(false)
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const [showUpgradeCard, setShowUpgradeCard] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [showSearchResults, setShowSearchResults] = useState(false)
+    const [notifications, setNotifications] = useState([])
+    const [unreadCount, setUnreadCount] = useState(0)
 
-    //Pusher
+    // Pusher
     useEffect(() => {
         if (!user) return
-
         const channel = pusher.subscribe(`user.${user.id}`)
-
         channel.bind('notification.new', (data) => {
             setNotifications(prev => [data.notification, ...prev])
             setUnreadCount(prev => prev + 1)
         })
-
         return () => {
             channel.unbind_all()
             pusher.unsubscribe(`user.${user.id}`)
         }
     }, [user])
 
-    // Fetch notifications - replaced with real data
-    const [notifications, setNotifications] = useState([])
-    const [unreadCount, setUnreadCount] = useState(0)
-
     useEffect(() => {
         fetchNotifications()
         fetchUnreadCount()
-
-        // Poll every 30s for new unread count
         const interval = setInterval(() => {
             fetchUnreadCount()
         }, 30000)
-
         return () => clearInterval(interval)
     }, [])
 
@@ -82,7 +74,6 @@ export default function Layout() {
             console.error('Failed to mark as read:', error)
         }
     }
-
 
     useEffect(() => {
         const saved = localStorage.getItem('upgradeCardDismissed')
@@ -117,15 +108,11 @@ export default function Layout() {
                 setShowSearchResults(false)
             }
         }
-
-        // debounce search
         const timer = setTimeout(() => {
             searchData()
         }, 300)
-
         return () => clearTimeout(timer)
     }, [searchQuery])
-
 
     const handleDismissUpgrade = () => {
         setShowUpgradeCard(false)
@@ -184,8 +171,8 @@ export default function Layout() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
-            {/* Professional Sidebar */}
-            <div className={`fixed inset-y-0 left-0 z-50 transition-all duration-300 no-print ${
+            {/* Desktop Sidebar */}
+            <div className={`hidden lg:block fixed inset-y-0 left-0 z-50 transition-all duration-300 ${
                 sidebarCollapsed ? 'w-20' : 'w-80'
             } bg-white dark:bg-gray-800 shadow-2xl dark:shadow-gray-900/50`}>
                 <div className="flex flex-col h-full">
@@ -205,7 +192,6 @@ export default function Layout() {
                         <button
                             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
                             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                            title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                         >
                             <span className="text-gray-600 dark:text-gray-400">{sidebarCollapsed ? '→' : '←'}</span>
                         </button>
@@ -217,7 +203,7 @@ export default function Layout() {
                             <div className="relative" onClick={(e) => e.stopPropagation()}>
                                 <button
                                     onClick={() => setShowOrgMenu(!showOrgMenu)}
-                                    className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all group"
+                                    className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
                                 >
                                     <div className="flex items-center space-x-3">
                                         <div className="relative">
@@ -231,14 +217,13 @@ export default function Layout() {
                                             <div className="flex items-center space-x-2">
                                                 <span className={`inline-block w-2 h-2 rounded-full ${
                                                     organization?.plan === 'free' ? 'bg-gray-400' :
-                                                        organization?.plan === 'pro' ? 'bg-purple-500' :
-                                                            'bg-indigo-600'
+                                                        organization?.plan === 'pro' ? 'bg-purple-500' : 'bg-indigo-600'
                                                 }`}></span>
                                                 <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">{organization?.plan}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <svg className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform ${showOrgMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg className={`w-4 h-4 text-gray-400 transition-transform ${showOrgMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                     </svg>
                                 </button>
@@ -311,7 +296,7 @@ export default function Layout() {
                                         </>
                                     )}
                                     {sidebarCollapsed && item.badge && (
-                                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-purple-600 dark:bg-purple-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
                                             {item.badge}
                                         </span>
                                     )}
@@ -326,14 +311,12 @@ export default function Layout() {
                             <div className="relative bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 rounded-2xl p-4 text-white shadow-xl overflow-hidden">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
                                 <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
-
                                 <button
                                     onClick={handleDismissUpgrade}
                                     className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
                                 >
                                     ×
                                 </button>
-
                                 <div className="relative">
                                     <div className="text-2xl mb-2">🚀</div>
                                     <h4 className="font-bold mb-1">Upgrade to Pro</h4>
@@ -396,23 +379,66 @@ export default function Layout() {
                 </div>
             </div>
 
+            {/* Mobile Bottom Navigation */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-2xl no-print">
+                <div className="grid grid-cols-5 gap-1">
+                    {navigation.map((item) => {
+                        const active = isActive(item.path)
+                        return (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                className={`flex flex-col items-center justify-center py-3 relative ${
+                                    active
+                                        ? 'text-purple-600 dark:text-purple-400'
+                                        : 'text-gray-600 dark:text-gray-400'
+                                }`}
+                            >
+                                <span className="text-2xl mb-1">{item.icon}</span>
+                                <span className="text-xs font-medium">{item.name}</span>
+                                {item.badge && (
+                                    <span className="absolute top-1 right-1/4 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                                        {item.badge}
+                                    </span>
+                                )}
+                                {active && (
+                                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-indigo-600"></div>
+                                )}
+                            </Link>
+                        )
+                    })}
+                </div>
+            </div>
+
             {/* Main Content */}
-            <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-80'}`}>
+            <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-80'} pb-20 lg:pb-0`}>
                 {/* Top Bar */}
-                <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm">
-                    <div className="px-8 py-4 flex items-center justify-between">
-                        <div>
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <div className="sticky top-0 z-40 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm no-print">
+                    <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between gap-3">
+                        {/* Mobile Menu Button */}
+                        <button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        >
+                            {mobileMenuOpen ? (
+                                <X className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+                            ) : (
+                                <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300" />
+                            )}
+                        </button>
+
+                        <div className="flex-1 min-w-0">
+                            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white truncate">
                                 {navigation.find(n => isActive(n.path))?.name || 'Dashboard'}
                             </h2>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <p className="hidden sm:block text-sm text-gray-500 dark:text-gray-400">
                                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                             </p>
                         </div>
 
-                        <div className="flex items-center space-x-3">
-                            {/* Search Bar */}
-                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center space-x-2 sm:space-x-3">
+                            {/* Search Bar - Desktop Only */}
+                            <div className="hidden lg:block relative" onClick={(e) => e.stopPropagation()}>
                                 <div className="relative">
                                     <input
                                         type="text"
@@ -421,9 +447,7 @@ export default function Layout() {
                                         placeholder="Search projects, tasks..."
                                         className="w-64 pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-transparent outline-none transition-all bg-gray-50 dark:bg-gray-700 focus:bg-white dark:focus:bg-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                                     />
-                                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500">
-                                        🔍
-                                    </span>
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
                                 </div>
 
                                 {showSearchResults && searchResults.length > 0 && (
@@ -456,7 +480,6 @@ export default function Layout() {
                             <button
                                 onClick={toggleTheme}
                                 className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                             >
                                 {theme === 'light' ? (
                                     <Moon className="w-5 h-5 text-gray-600" />
@@ -471,16 +494,16 @@ export default function Layout() {
                                     onClick={() => setShowNotifications(!showNotifications)}
                                     className="relative p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                                 >
-                                    <span className="text-2xl">🔔</span>
+                                    <Bell className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                                     {unreadCount > 0 && (
-                                        <span className="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                                            {unreadCount}
+                                        <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                                            {unreadCount > 9 ? '9+' : unreadCount}
                                         </span>
                                     )}
                                 </button>
 
                                 {showNotifications && (
-                                    <div className="absolute top-full right-0 mt-2 w-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden">
+                                    <div className="absolute top-full right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden max-h-[80vh]">
                                         <div className="p-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-between">
                                             <h3 className="font-bold">Notifications</h3>
                                             {unreadCount > 0 && (
@@ -515,11 +538,11 @@ export default function Layout() {
                                                         }}
                                                     >
                                                         <div className="flex items-start space-x-3">
-                    <span className="text-2xl">
-                        {notif.type === 'task_assigned' ? '📋' :
-                            notif.type === 'comment_added' ? '💬' :
-                                notif.type === 'task_completed' ? '✅' : '📌'}
-                    </span>
+                                                            <span className="text-2xl flex-shrink-0">
+                                                                {notif.type === 'task_assigned' ? '📋' :
+                                                                    notif.type === 'comment_added' ? '💬' :
+                                                                        notif.type === 'task_completed' ? '✅' : '📌'}
+                                                            </span>
                                                             <div className="flex-1 min-w-0">
                                                                 <p className="text-sm font-medium text-gray-900 dark:text-white">{notif.message}</p>
                                                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -527,15 +550,14 @@ export default function Layout() {
                                                                 </p>
                                                             </div>
                                                             {!notif.read && (
-                                                                <div
-                                                                    className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full flex-shrink-0 mt-2"></div>
+                                                                <div className="w-2 h-2 bg-purple-600 dark:bg-purple-400 rounded-full flex-shrink-0 mt-2"></div>
                                                             )}
                                                         </div>
                                                     </div>
                                                 ))
                                             ) : (
                                                 <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-                                                    <div className="text-4xl mb-2">🔔</div>
+                                                    <Bell className="w-12 h-12 mx-auto mb-2 opacity-50" />
                                                     <p>No notifications</p>
                                                 </div>
                                             )}
@@ -544,18 +566,18 @@ export default function Layout() {
                                 )}
                             </div>
 
-                            {/* New Button */}
-                            <div className="relative" onClick={(e) => e.stopPropagation()}>
+                            {/* New Button - Hidden on mobile */}
+                            <div className="hidden sm:block relative" onClick={(e) => e.stopPropagation()}>
                                 <button
                                     onClick={() => setShowNewMenu(!showNewMenu)}
                                     className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center space-x-2"
                                 >
-                                    <span>+ New</span>
+                                    <Plus className="w-4 h-4" />
+                                    <span>New</span>
                                 </button>
 
                                 {showNewMenu && (
-                                    <div
-                                        className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden">
+                                    <div className="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden">
                                         {quickActions.map((action, index) => (
                                             <button
                                                 key={index}
@@ -566,8 +588,7 @@ export default function Layout() {
                                                 className="w-full flex items-center space-x-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-left"
                                             >
                                                 <span className="text-xl">{action.icon}</span>
-                                                <span
-                                                    className="text-gray-700 dark:text-gray-300 font-medium">{action.name}</span>
+                                                <span className="text-gray-700 dark:text-gray-300 font-medium">{action.name}</span>
                                             </button>
                                         ))}
                                     </div>
@@ -577,8 +598,130 @@ export default function Layout() {
                     </div>
                 </div>
 
+                {/* Mobile Menu Drawer */}
+                {mobileMenuOpen && (
+                    <div className="lg:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}>
+                        <div className="fixed inset-y-0 left-0 w-80 bg-white dark:bg-gray-800 shadow-2xl animate-in slide-in-from-left duration-300" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex flex-col h-full">
+                                {/* Mobile Header */}
+                                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="flex items-center space-x-3">
+                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg">
+                                                <span className="text-white font-bold text-xl">C</span>
+                                            </div>
+                                            <div>
+                                                <h1 className="text-lg font-bold text-gray-900 dark:text-white">CloudTask</h1>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400">Professional</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => setMobileMenuOpen(false)}
+                                            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                        >
+                                            <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                                        </button>
+                                    </div>
+
+                                    {/* Mobile User Info */}
+                                    <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl">
+                                        <div className="relative flex-shrink-0">
+                                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-md">
+                                                {user?.name?.charAt(0)}
+                                            </div>
+                                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-800"></div>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-semibold text-sm text-gray-900 dark:text-white truncate">{user?.name}</div>
+                                            <div className="text-xs text-gray-600 dark:text-gray-400 truncate">{user?.email}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Mobile Search */}
+                                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Search..."
+                                            className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-purple-500"
+                                        />
+                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    </div>
+                                </div>
+
+                                {/* Mobile Organization */}
+                                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <div className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
+                                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white font-semibold shadow-md">
+                                            {organization?.name?.charAt(0)}
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="font-semibold text-sm text-gray-900 dark:text-white">{organization?.name}</div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">{organization?.plan} Plan</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Mobile Quick Actions */}
+                                <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Quick Actions</p>
+                                    <div className="space-y-2">
+                                        {quickActions.map((action, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => {
+                                                    action.action()
+                                                    setMobileMenuOpen(false)
+                                                }}
+                                                className="w-full flex items-center space-x-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-left"
+                                            >
+                                                <span className="text-xl">{action.icon}</span>
+                                                <span className="text-gray-700 dark:text-gray-300 font-medium">{action.name}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Mobile Upgrade Card */}
+                                {organization?.plan === 'free' && (
+                                    <div className="p-4">
+                                        <div className="relative bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl p-4 text-white shadow-xl overflow-hidden">
+                                            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12"></div>
+                                            <div className="relative">
+                                                <div className="text-2xl mb-2">🚀</div>
+                                                <h4 className="font-bold mb-1 text-sm">Upgrade to Pro</h4>
+                                                <p className="text-xs text-purple-100 mb-3">Unlock unlimited features</p>
+                                                <Link to="/settings" onClick={() => setMobileMenuOpen(false)} className="block text-center bg-white text-purple-600 rounded-lg py-2 text-sm font-semibold hover:bg-gray-100 transition-colors">
+                                                    View Plans
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Mobile Logout */}
+                                <div className="mt-auto p-4 border-t border-gray-200 dark:border-gray-700">
+                                    <button
+                                        onClick={() => {
+                                            handleLogout()
+                                            setMobileMenuOpen(false)
+                                        }}
+                                        className="w-full flex items-center justify-center space-x-2 p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                                    >
+                                        <span>🚪</span>
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Page Content */}
-                <main className="p-8 min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+                <main className="p-4 sm:p-6 lg:p-8 min-h-screen">
                     <Outlet />
                 </main>
             </div>

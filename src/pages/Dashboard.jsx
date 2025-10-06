@@ -87,21 +87,21 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8 px-4 sm:px-0">
             {/* Welcome Section */}
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 rounded-2xl p-8 text-white shadow-xl">
-                <div className="flex items-center justify-between">
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-700 rounded-2xl p-6 sm:p-8 text-white shadow-xl">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-4xl font-bold mb-2">Welcome back! 👋</h1>
-                        <p className="text-purple-100 dark:text-purple-200 text-lg">Here's what's happening with your projects today.</p>
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">Welcome back! 👋</h1>
+                        <p className="text-purple-100 dark:text-purple-200 text-base sm:text-lg">Here's what's happening with your projects today.</p>
                     </div>
-                    <div className="hidden lg:block">
+                    <div className="w-full lg:w-auto">
                         <div className="flex space-x-2">
                             {['week', 'month', 'year'].map((range) => (
                                 <button
                                     key={range}
                                     onClick={() => setTimeRange(range)}
-                                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                                    className={`flex-1 lg:flex-initial px-3 sm:px-4 py-2 rounded-lg font-medium transition-all text-sm sm:text-base ${
                                         timeRange === range
                                             ? 'bg-white text-purple-600'
                                             : 'bg-purple-500/50 dark:bg-purple-600/50 text-white hover:bg-purple-500 dark:hover:bg-purple-600'
@@ -116,37 +116,37 @@ export default function Dashboard() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {stats.map((stat, index) => (
                     <div
                         key={stat.label}
                         className="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl dark:shadow-gray-900/50 transition-all duration-300 group cursor-pointer border border-gray-100 dark:border-gray-700"
                     >
                         <div className={`absolute inset-0 bg-gradient-to-br ${stat.bgGradient} opacity-50 group-hover:opacity-70 transition-opacity`}></div>
-                        <div className="relative p-6">
+                        <div className="relative p-4 sm:p-6">
                             <div className="flex items-start justify-between mb-4">
-                                <div className={`p-3 rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
-                                    <span className="text-3xl">{stat.icon}</span>
+                                <div className={`p-2 sm:p-3 rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                                    <span className="text-2xl sm:text-3xl">{stat.icon}</span>
                                 </div>
-                                <div className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                <div className={`px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
                                     stat.changeType === 'increase' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
                                 }`}>
                                     {stat.change}
                                 </div>
                             </div>
-                            <div className="text-gray-600 dark:text-gray-400 text-sm font-medium mb-1">{stat.label}</div>
-                            <div className="text-4xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+                            <div className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm font-medium mb-1">{stat.label}</div>
+                            <div className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
                         </div>
                     </div>
                 ))}
             </div>
 
             {/* Charts Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Tasks by Status */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">Tasks Overview</h3>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Tasks Overview</h3>
                         <button className="text-purple-600 dark:text-purple-400 text-sm font-medium hover:text-purple-700 dark:hover:text-purple-300">View All →</button>
                     </div>
                     <div className="space-y-4">
@@ -156,13 +156,13 @@ export default function Dashboard() {
                             return (
                                 <div key={status} className="group cursor-pointer">
                                     <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center space-x-3">
-                                            <span className={`px-3 py-1 rounded-lg text-xs font-bold ${colors.bg} ${colors.text}`}>
+                                        <div className="flex items-center space-x-2 sm:space-x-3">
+                                            <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-bold ${colors.bg} ${colors.text}`}>
                                                 {status.replace('_', ' ').toUpperCase()}
                                             </span>
-                                            <span className="text-gray-700 dark:text-gray-300 font-medium">{count} tasks</span>
+                                            <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">{count} tasks</span>
                                         </div>
-                                        <span className="text-gray-500 dark:text-gray-400 font-semibold">{percentage.toFixed(0)}%</span>
+                                        <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-semibold">{percentage.toFixed(0)}%</span>
                                     </div>
                                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                                         <div
@@ -177,9 +177,9 @@ export default function Dashboard() {
                 </div>
 
                 {/* Tasks by Priority */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">Priority Distribution</h3>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Priority Distribution</h3>
                         <button className="text-purple-600 dark:text-purple-400 text-sm font-medium hover:text-purple-700 dark:hover:text-purple-300">Filter →</button>
                     </div>
                     <div className="space-y-4">
@@ -189,13 +189,13 @@ export default function Dashboard() {
                             return (
                                 <div key={priority} className="group cursor-pointer">
                                     <div className="flex items-center justify-between mb-2">
-                                        <div className="flex items-center space-x-3">
-                                            <span className={`px-3 py-1 rounded-lg text-xs font-bold ${colors.bg} ${colors.text}`}>
+                                        <div className="flex items-center space-x-2 sm:space-x-3">
+                                            <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-bold ${colors.bg} ${colors.text}`}>
                                                 {priority.toUpperCase()}
                                             </span>
-                                            <span className="text-gray-700 dark:text-gray-300 font-medium">{count} tasks</span>
+                                            <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">{count} tasks</span>
                                         </div>
-                                        <span className="text-gray-500 dark:text-gray-400 font-semibold">{percentage.toFixed(0)}%</span>
+                                        <span className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 font-semibold">{percentage.toFixed(0)}%</span>
                                     </div>
                                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                                         <div
@@ -211,40 +211,40 @@ export default function Dashboard() {
             </div>
 
             {/* Project Progress */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">📊 Active Projects Progress</h3>
-                    <Link to="/projects" className="text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300 flex items-center">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">📊 Active Projects Progress</h3>
+                    <Link to="/projects" className="text-purple-600 dark:text-purple-400 text-sm sm:text-base font-medium hover:text-purple-700 dark:hover:text-purple-300 flex items-center">
                         View All Projects →
                     </Link>
                 </div>
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                     {data?.project_progress?.slice(0, 5).map((project, index) => (
                         <div key={project.id} className="group cursor-pointer">
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center space-x-4">
-                                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-3">
+                                <div className="flex items-center space-x-3 sm:space-x-4">
+                                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br ${
                                         ['from-purple-500 to-pink-500', 'from-blue-500 to-cyan-500', 'from-green-500 to-emerald-500', 'from-orange-500 to-red-500', 'from-indigo-500 to-purple-500'][index % 5]
-                                    } flex items-center justify-center text-white text-xl font-bold shadow-lg group-hover:scale-110 transition-transform`}>
+                                    } flex items-center justify-center text-white text-lg sm:text-xl font-bold shadow-lg group-hover:scale-110 transition-transform`}>
                                         {project.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <div className="font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                        <div className="font-bold text-sm sm:text-base text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                                             {project.name}
                                         </div>
-                                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                                             {project.completed_tasks} of {project.total_tasks} tasks completed
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{project.progress}%</div>
+                                <div className="text-left sm:text-right">
+                                    <div className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{project.progress}%</div>
                                     <div className="text-xs text-gray-500 dark:text-gray-400">Complete</div>
                                 </div>
                             </div>
-                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden shadow-inner">
+                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
                                 <div
-                                    className={`h-4 rounded-full bg-gradient-to-r ${
+                                    className={`h-3 sm:h-4 rounded-full bg-gradient-to-r ${
                                         ['from-purple-500 to-pink-500', 'from-blue-500 to-cyan-500', 'from-green-500 to-emerald-500', 'from-orange-500 to-red-500', 'from-indigo-500 to-purple-500'][index % 5]
                                     } group-hover:scale-105 transition-transform origin-left shadow-lg`}
                                     style={{ width: `${project.progress}%` }}
@@ -254,10 +254,10 @@ export default function Dashboard() {
                     ))}
                     {(!data?.project_progress || data.project_progress.length === 0) && (
                         <div className="text-center py-12 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-gray-200 dark:border-gray-700">
-                            <div className="text-6xl mb-4">📁</div>
-                            <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No active projects yet</h4>
-                            <p className="text-gray-600 dark:text-gray-400 mb-6">Create your first project to get started</p>
-                            <Link to="/projects" className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg">
+                            <div className="text-4xl sm:text-6xl mb-4">📁</div>
+                            <h4 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2">No active projects yet</h4>
+                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">Create your first project to get started</p>
+                            <Link to="/projects" className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg text-sm sm:text-base">
                                 <span className="mr-2">+</span> Create First Project
                             </Link>
                         </div>
@@ -266,24 +266,24 @@ export default function Dashboard() {
             </div>
 
             {/* Bottom Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* My Tasks */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">🎯 My Tasks</h3>
-                        <Link to="/tasks" className="text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">🎯 My Tasks</h3>
+                        <Link to="/tasks" className="text-purple-600 dark:text-purple-400 text-sm font-medium hover:text-purple-700 dark:hover:text-purple-300">
                             View All →
                         </Link>
                     </div>
                     <div className="space-y-3">
                         {data?.my_tasks?.map((task, index) => (
-                            <div key={task.id} className="p-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-700/50 hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 transition-all cursor-pointer group border border-gray-200 dark:border-gray-600">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex-1">
-                                        <h4 className="font-semibold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors mb-1">
+                            <div key={task.id} className="p-3 sm:p-4 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-700/50 hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-900/20 dark:hover:to-indigo-900/20 transition-all cursor-pointer group border border-gray-200 dark:border-gray-600">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between gap-2">
+                                    <div className="flex-1 w-full">
+                                        <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors mb-1">
                                             {task.title}
                                         </h4>
-                                        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                             <span className="px-2 py-1 rounded bg-white dark:bg-gray-600 text-xs font-medium">{task.project.name}</span>
                                             {task.due_date && (
                                                 <span className="flex items-center">
@@ -293,7 +293,7 @@ export default function Dashboard() {
                                             )}
                                         </div>
                                     </div>
-                                    <span className={`px-3 py-1 rounded-lg text-xs font-bold ${priorityColors[task.priority]?.bg} ${priorityColors[task.priority]?.text}`}>
+                                    <span className={`px-2 sm:px-3 py-1 rounded-lg text-xs font-bold ${priorityColors[task.priority]?.bg} ${priorityColors[task.priority]?.text} whitespace-nowrap`}>
                                         {task.priority.toUpperCase()}
                                     </span>
                                 </div>
@@ -301,44 +301,44 @@ export default function Dashboard() {
                         ))}
                         {(!data?.my_tasks || data.my_tasks.length === 0) && (
                             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                                <div className="text-4xl mb-2">✓</div>
-                                <p>All caught up! No pending tasks.</p>
+                                <div className="text-3xl sm:text-4xl mb-2">✓</div>
+                                <p className="text-sm sm:text-base">All caught up! No pending tasks.</p>
                             </div>
                         )}
                     </div>
                 </div>
 
                 {/* Recent Activity */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
-                    <div className="flex items-center justify-between mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white">⚡ Recent Activity</h3>
-                        <button className="text-purple-600 dark:text-purple-400 font-medium hover:text-purple-700 dark:hover:text-purple-300">Refresh</button>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-6 hover:shadow-xl dark:shadow-gray-900/50 transition-shadow border border-gray-100 dark:border-gray-700">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-2">
+                        <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">⚡ Recent Activity</h3>
+                        <button className="text-purple-600 dark:text-purple-400 text-sm font-medium hover:text-purple-700 dark:hover:text-purple-300">Refresh</button>
                     </div>
                     <div className="space-y-4">
                         {data?.recent_tasks?.slice(0, 6).map((task, index) => (
                             <div key={task.id} className="flex items-start space-x-3 group cursor-pointer">
-                                <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${
+                                <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br ${
                                     ['from-purple-500 to-pink-500', 'from-blue-500 to-cyan-500', 'from-green-500 to-emerald-500'][index % 3]
-                                } flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform`}>
+                                } flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform flex-shrink-0`}>
                                     {task.assigned_user?.name?.charAt(0) || '?'}
                                 </div>
-                                <div className="flex-1">
-                                    <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-sm">
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-medium text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors text-xs sm:text-sm truncate">
                                         {task.title}
                                     </h4>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">
                                         {task.project.name} • {task.assigned_user?.name || 'Unassigned'}
                                     </p>
                                 </div>
-                                <span className={`px-2 py-1 rounded-lg text-xs font-medium ${statusColors[task.status]?.bg} ${statusColors[task.status]?.text}`}>
+                                <span className={`px-2 py-1 rounded-lg text-xs font-medium ${statusColors[task.status]?.bg} ${statusColors[task.status]?.text} whitespace-nowrap flex-shrink-0`}>
                                     {task.status.replace('_', ' ').toUpperCase()}
                                 </span>
                             </div>
                         ))}
                         {(!data?.recent_tasks || data.recent_tasks.length === 0) && (
                             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                                <div className="text-4xl mb-2">📋</div>
-                                <p>No recent activity</p>
+                                <div className="text-3xl sm:text-4xl mb-2">📋</div>
+                                <p className="text-sm sm:text-base">No recent activity</p>
                             </div>
                         )}
                     </div>

@@ -125,7 +125,7 @@ export default function LandingPage() {
                     <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
                         <div className="animate-in fade-in slide-in-from-left duration-700">
                             <div className="inline-block mb-4 px-3 sm:px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
-                                <span className="text-purple-700 dark:text-purple-300 font-semibold text-xs sm:text-sm">🚀 Now with AI-powered insights</span>
+                                <span className="text-purple-700 dark:text-purple-300 font-semibold text-xs sm:text-sm">🚀 Coming Soon: AI-powered insights</span>
                             </div>
 
                             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">

@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { useTheme } from '../context/ThemeContext' // Import theme hook
+import { useTheme } from '../context/ThemeContext'
 import { organizationAPI } from '../services/api'
 import { paymentAPI } from '../services/api'
 import { Moon, Sun, Upload, Check, AlertTriangle, Bell, Shield, Users, Mail, Globe, CreditCard, Download, Zap } from 'lucide-react'
 
 export default function Settings() {
     const { organization, refreshUser, setOrganization } = useApp()
-    const { theme, toggleTheme, setTheme } = useTheme() // Use theme context
+    const { theme, toggleTheme, setTheme } = useTheme()
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
     const [usage, setUsage] = useState(null)
@@ -41,7 +41,6 @@ export default function Settings() {
         }
     }, [organization])
 
-    // Handle successful payment redirect
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search)
         const success = urlParams.get("success")
@@ -226,27 +225,27 @@ export default function Settings() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-purple-900/20 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="space-y-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+                <div className="space-y-4 sm:space-y-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
-                            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
                                 Settings
                             </h1>
-                            <p className="text-gray-600 dark:text-gray-400 mt-2 text-lg">
+                            <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-lg">
                                 Manage your organization settings and preferences
                             </p>
                         </div>
                         <button
                             onClick={toggleTheme}
-                            className="p-4 rounded-2xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200"
+                            className="p-3 sm:p-4 rounded-2xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl hover:scale-105 transition-all duration-200"
                             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                         >
                             {theme === 'light' ? (
-                                <Moon className="w-6 h-6 text-purple-600" />
+                                <Moon className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                             ) : (
-                                <Sun className="w-6 h-6 text-yellow-400" />
+                                <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
                             )}
                         </button>
                     </div>
@@ -259,7 +258,7 @@ export default function Settings() {
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`flex-shrink-0 px-6 py-4 font-medium transition-all flex items-center gap-2 ${
+                                        className={`flex-shrink-0 px-4 sm:px-6 py-3 sm:py-4 font-medium transition-all flex items-center gap-2 text-xs sm:text-sm ${
                                             activeTab === tab.id
                                                 ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 bg-purple-50 dark:bg-purple-900/20'
                                                 : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/50'
@@ -272,21 +271,21 @@ export default function Settings() {
                             </div>
                         </div>
 
-                        <div className="p-8">
+                        <div className="p-4 sm:p-6 lg:p-8">
                             {/* General Tab */}
                             {activeTab === 'general' && (
-                                <div className="space-y-8">
+                                <div className="space-y-6 sm:space-y-8">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                             Organization Information
                                         </h2>
-                                        <p className="text-gray-600 dark:text-gray-400">
+                                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                             Update your organization's public information
                                         </p>
                                     </div>
 
-                                    <div className="space-y-6">
-                                        <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-4 sm:space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                             <div>
                                                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                                                     Organization Name
@@ -295,7 +294,7 @@ export default function Settings() {
                                                     type="text"
                                                     value={formData.name}
                                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 focus:border-purple-500 dark:focus:border-purple-400 transition-all"
+                                                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 focus:border-purple-500 dark:focus:border-purple-400 transition-all text-sm sm:text-base"
                                                     placeholder="Acme Corporation"
                                                 />
                                             </div>
@@ -307,7 +306,7 @@ export default function Settings() {
                                                 <input
                                                     type="text"
                                                     value={organization?.id || ''}
-                                                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 cursor-not-allowed"
+                                                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 cursor-not-allowed text-sm sm:text-base"
                                                     disabled
                                                 />
                                             </div>
@@ -320,7 +319,7 @@ export default function Settings() {
                                             <textarea
                                                 value={formData.description}
                                                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 focus:border-purple-500 dark:focus:border-purple-400 transition-all resize-none"
+                                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-4 focus:ring-purple-500/20 dark:focus:ring-purple-400/20 focus:border-purple-500 dark:focus:border-purple-400 transition-all resize-none text-sm sm:text-base"
                                                 rows="4"
                                                 placeholder="Tell us about your organization and what you do..."
                                             />
@@ -330,26 +329,26 @@ export default function Settings() {
                                             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
                                                 Organization Logo
                                             </label>
-                                            <div className="flex items-center space-x-6">
+                                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                                                 <div className="relative group">
                                                     {logoPreview ? (
                                                         <img
                                                             src={logoPreview}
                                                             alt="Organization logo"
-                                                            className="w-28 h-28 rounded-2xl object-cover border-4 border-gray-200 dark:border-gray-700 shadow-lg"
+                                                            className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl object-cover border-4 border-gray-200 dark:border-gray-700 shadow-lg"
                                                         />
                                                     ) : (
-                                                        <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+                                                        <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-600 flex items-center justify-center text-white text-3xl sm:text-4xl font-bold shadow-lg">
                                                             {organization?.name?.charAt(0)}
                                                         </div>
                                                     )}
                                                     {uploadingLogo && (
                                                         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                                                            <div className="animate-spin rounded-full h-10 w-10 border-4 border-white border-t-transparent"></div>
+                                                            <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-4 border-white border-t-transparent"></div>
                                                         </div>
                                                     )}
                                                 </div>
-                                                <div className="flex-1">
+                                                <div className="flex-1 w-full">
                                                     <input
                                                         type="file"
                                                         id="logo-upload"
@@ -359,12 +358,12 @@ export default function Settings() {
                                                     />
                                                     <label
                                                         htmlFor="logo-upload"
-                                                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl cursor-pointer transition-all shadow-lg hover:shadow-xl font-semibold"
+                                                        className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl cursor-pointer transition-all shadow-lg hover:shadow-xl font-semibold text-sm sm:text-base"
                                                     >
-                                                        <Upload className="w-5 h-5 mr-2" />
+                                                        <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                                         Upload New Logo
                                                     </label>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-3">
+                                                    <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-3">
                                                         JPG, PNG or SVG. Maximum file size 2MB.
                                                     </p>
                                                     <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
@@ -374,11 +373,11 @@ export default function Settings() {
                                             </div>
                                         </div>
 
-                                        <div className="flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700">
+                                        <div className="flex justify-end pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
                                             <button
                                                 onClick={handleUpdateOrg}
                                                 disabled={loading}
-                                                className="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:from-purple-400 disabled:to-indigo-400 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl flex items-center disabled:cursor-not-allowed"
+                                                className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:from-purple-400 disabled:to-indigo-400 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center disabled:cursor-not-allowed text-sm sm:text-base"
                                             >
                                                 {loading ? (
                                                     <>
@@ -399,42 +398,41 @@ export default function Settings() {
 
                             {/* Appearance Tab */}
                             {activeTab === 'appearance' && (
-                                <div className="space-y-8">
+                                <div className="space-y-6 sm:space-y-8">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                             Appearance Settings
                                         </h2>
-                                        <p className="text-gray-600 dark:text-gray-400">
+                                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                             Customize how the application looks and feels
                                         </p>
                                     </div>
 
-                                    <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                         <button
                                             onClick={() => {
                                                 setTheme('light')
-                                                applyTheme('light')
                                             }}
-                                            className={`group p-8 rounded-2xl border-3 transition-all duration-300 ${
+                                            className={`group p-6 sm:p-8 rounded-2xl border-3 transition-all duration-300 ${
                                                 theme === 'light'
                                                     ? 'border-purple-600 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-xl scale-105'
                                                     : 'border-gray-200 dark:border-gray-700 hover:border-purple-400 hover:shadow-lg bg-white dark:bg-gray-800'
                                             }`}
                                         >
-                                            <div className="flex items-center justify-between mb-6">
-                                                <div className="p-4 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 shadow-lg group-hover:scale-110 transition-transform">
-                                                    <Sun className="w-10 h-10 text-white" />
+                                            <div className="flex items-center justify-between mb-4 sm:mb-6">
+                                                <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 shadow-lg group-hover:scale-110 transition-transform">
+                                                    <Sun className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                                                 </div>
                                                 {theme === 'light' && (
-                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg animate-in">
-                                                        <Check className="w-5 h-5 text-white" />
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg animate-in">
+                                                        <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                                     </div>
                                                 )}
                                             </div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white text-2xl mb-2">
+                                            <h3 className="font-bold text-gray-900 dark:text-white text-xl sm:text-2xl mb-2">
                                                 Light Mode
                                             </h3>
-                                            <p className="text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                                 Bright and clean interface perfect for daytime use
                                             </p>
                                         </button>
@@ -442,41 +440,40 @@ export default function Settings() {
                                         <button
                                             onClick={() => {
                                                 setTheme('dark')
-                                                applyTheme('dark')
                                             }}
-                                            className={`group p-8 rounded-2xl border-3 transition-all duration-300 ${
+                                            className={`group p-6 sm:p-8 rounded-2xl border-3 transition-all duration-300 ${
                                                 theme === 'dark'
                                                     ? 'border-purple-600 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-xl scale-105'
                                                     : 'border-gray-200 dark:border-gray-700 hover:border-purple-400 hover:shadow-lg bg-white dark:bg-gray-800'
                                             }`}
                                         >
-                                            <div className="flex items-center justify-between mb-6">
-                                                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg group-hover:scale-110 transition-transform">
-                                                    <Moon className="w-10 h-10 text-white" />
+                                            <div className="flex items-center justify-between mb-4 sm:mb-6">
+                                                <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg group-hover:scale-110 transition-transform">
+                                                    <Moon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                                                 </div>
                                                 {theme === 'dark' && (
-                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg animate-in">
-                                                        <Check className="w-5 h-5 text-white" />
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 flex items-center justify-center shadow-lg animate-in">
+                                                        <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                                                     </div>
                                                 )}
                                             </div>
-                                            <h3 className="font-bold text-gray-900 dark:text-white text-2xl mb-2">
+                                            <h3 className="font-bold text-gray-900 dark:text-white text-xl sm:text-2xl mb-2">
                                                 Dark Mode
                                             </h3>
-                                            <p className="text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                                 Easy on the eyes, perfect for night work and focus
                                             </p>
                                         </button>
                                     </div>
 
-                                    <div className="p-6 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-2xl">
+                                    <div className="p-4 sm:p-6 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-2xl">
                                         <div className="flex items-start gap-3">
-                                            <Globe className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
+                                            <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
                                             <div>
-                                                <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                                                <h4 className="font-semibold text-sm sm:text-base text-blue-900 dark:text-blue-100 mb-1">
                                                     System-wide Theme
                                                 </h4>
-                                                <p className="text-sm text-blue-700 dark:text-blue-300">
+                                                <p className="text-xs sm:text-sm text-blue-700 dark:text-blue-300">
                                                     Your theme preference will be applied across all pages and saved to your browser.
                                                 </p>
                                             </div>
@@ -487,40 +484,40 @@ export default function Settings() {
 
                             {/* Notifications Tab */}
                             {activeTab === 'notifications' && (
-                                <div className="space-y-8">
+                                <div className="space-y-6 sm:space-y-8">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                             Notification Preferences
                                         </h2>
-                                        <p className="text-gray-600 dark:text-gray-400">
+                                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                             Control how and when you receive notifications
                                         </p>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3 sm:space-y-4">
                                         {[
-                                            { key: 'emailNotifications', label: 'Email Notifications', desc: 'Receive email updates about your projects', icon: <Mail className="w-5 h-5" /> },
-                                            { key: 'pushNotifications', label: 'Push Notifications', desc: 'Get browser notifications for important updates', icon: <Bell className="w-5 h-5" /> },
-                                            { key: 'weeklyReports', label: 'Weekly Reports', desc: 'Receive weekly summary of your organization activity', icon: <Download className="w-5 h-5" /> },
-                                            { key: 'securityAlerts', label: 'Security Alerts', desc: 'Important security and account notifications', icon: <Shield className="w-5 h-5" /> },
+                                            { key: 'emailNotifications', label: 'Email Notifications', desc: 'Receive email updates about your projects', icon: <Mail className="w-4 h-4 sm:w-5 sm:h-5" /> },
+                                            { key: 'pushNotifications', label: 'Push Notifications', desc: 'Get browser notifications for important updates', icon: <Bell className="w-4 h-4 sm:w-5 sm:h-5" /> },
+                                            { key: 'weeklyReports', label: 'Weekly Reports', desc: 'Receive weekly summary of your organization activity', icon: <Download className="w-4 h-4 sm:w-5 sm:h-5" /> },
+                                            { key: 'securityAlerts', label: 'Security Alerts', desc: 'Important security and account notifications', icon: <Shield className="w-4 h-4 sm:w-5 sm:h-5" /> },
                                         ].map((pref) => (
-                                            <div key={pref.key} className="flex items-center justify-between p-6 bg-white dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all">
-                                                <div className="flex items-start gap-4">
-                                                    <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-400">
+                                            <div key={pref.key} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 bg-white dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all gap-3">
+                                                <div className="flex items-start gap-3 sm:gap-4 flex-1">
+                                                    <div className="p-2 sm:p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl text-purple-600 dark:text-purple-400 flex-shrink-0">
                                                         {pref.icon}
                                                     </div>
                                                     <div>
-                                                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                                        <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white mb-1">
                                                             {pref.label}
                                                         </h4>
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                                             {pref.desc}
                                                         </p>
                                                     </div>
                                                 </div>
                                                 <button
                                                     onClick={() => setPreferences({ ...preferences, [pref.key]: !preferences[pref.key] })}
-                                                    className={`relative w-14 h-8 rounded-full transition-colors duration-300 ${
+                                                    className={`relative w-14 h-8 rounded-full transition-colors duration-300 flex-shrink-0 ${
                                                         preferences[pref.key] ? 'bg-gradient-to-r from-purple-600 to-indigo-600' : 'bg-gray-300 dark:bg-gray-600'
                                                     }`}
                                                 >
@@ -538,73 +535,73 @@ export default function Settings() {
 
                             {/* Plan & Billing Tab */}
                             {activeTab === 'plan' && (
-                                <div className="space-y-8">
-                                    <div className="bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 rounded-2xl p-8 text-white shadow-2xl">
-                                        <div className="flex items-center justify-between">
+                                <div className="space-y-6 sm:space-y-8">
+                                    <div className="bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 rounded-2xl p-6 sm:p-8 text-white shadow-2xl">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                             <div>
-                                                <h3 className="text-sm font-medium opacity-90 mb-2 uppercase tracking-wider">Current Plan</h3>
-                                                <div className="text-4xl font-bold capitalize mb-1">{organization?.plan}</div>
-                                                <p className="text-purple-100">Active since {new Date().toLocaleDateString()}</p>
+                                                <h3 className="text-xs sm:text-sm font-medium opacity-90 mb-2 uppercase tracking-wider">Current Plan</h3>
+                                                <div className="text-3xl sm:text-4xl font-bold capitalize mb-1">{organization?.plan}</div>
+                                                <p className="text-sm sm:text-base text-purple-100">Active since {new Date().toLocaleDateString()}</p>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="text-sm opacity-90 mb-2 uppercase tracking-wider">Monthly Cost</div>
-                                                <div className="text-4xl font-bold">
+                                            <div className="text-left sm:text-right">
+                                                <div className="text-xs sm:text-sm opacity-90 mb-2 uppercase tracking-wider">Monthly Cost</div>
+                                                <div className="text-3xl sm:text-4xl font-bold">
                                                     {plans.find((p) => p.name === organization?.plan)?.price}
                                                 </div>
-                                                <p className="text-purple-100 mt-1">per month</p>
+                                                <p className="text-sm sm:text-base text-purple-100 mt-1">per month</p>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="grid md:grid-cols-3 gap-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
                                         {plans.map((plan) => (
                                             <div
                                                 key={plan.name}
-                                                className={`relative overflow-visible rounded-2xl p-8 border-2 transition-all duration-300 ${
+                                                className={`relative overflow-visible rounded-2xl p-6 sm:p-8 border-2 transition-all duration-300 ${
                                                     organization?.plan === plan.name
                                                         ? 'border-purple-600 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 shadow-2xl scale-105'
                                                         : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:shadow-xl hover:scale-105'
                                                 }`}
                                             >
                                                 {plan.popular && (
-                                                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-white text-sm">
-                                                        <span className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs px-6 py-2 rounded-full font-bold shadow-lg animate-pulse">
+                                                    <div className="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-white text-xs">
+                                                        <span className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs px-4 sm:px-6 py-1 sm:py-2 rounded-full font-bold shadow-lg animate-pulse">
                                                             ‚≠ê MOST POPULAR
                                                         </span>
                                                     </div>
                                                 )}
-                                                <div className="text-center mb-6">
-                                                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                                                <div className="text-center mb-4 sm:mb-6">
+                                                    <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
                                                         {plan.title}
                                                     </h3>
-                                                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                                    <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm">
                                                         {plan.description}
                                                     </p>
                                                 </div>
-                                                <div className="text-center mb-8">
-                                                    <div className="text-5xl font-bold text-gray-900 dark:text-white">
+                                                <div className="text-center mb-6 sm:mb-8">
+                                                    <div className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white">
                                                         {plan.price}
                                                     </div>
-                                                    <span className="text-gray-500 dark:text-gray-400">/month</span>
+                                                    <span className="text-sm sm:text-base text-gray-500 dark:text-gray-400">/month</span>
                                                 </div>
-                                                <ul className="space-y-4 mb-8">
+                                                <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
                                                     {plan.features.map((feature, idx) => (
-                                                        <li key={idx} className="flex items-start text-sm">
-                                                            <Check className="w-5 h-5 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                                                        <li key={idx} className="flex items-start text-xs sm:text-sm">
+                                                            <Check className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
                                                             <span className="text-gray-700 dark:text-gray-300">{feature}</span>
                                                         </li>
                                                     ))}
                                                 </ul>
                                                 {organization?.plan === plan.name ? (
-                                                    <button className="w-full py-4 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl font-semibold cursor-not-allowed flex items-center justify-center">
-                                                        <Check className="w-5 h-5 mr-2" />
+                                                    <button className="w-full py-3 sm:py-4 bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-xl font-semibold cursor-not-allowed flex items-center justify-center text-sm sm:text-base">
+                                                        <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                                         Current Plan
                                                     </button>
                                                 ) : (
                                                     <button
                                                         onClick={() => handlePlanChange(plan.name)}
                                                         disabled={loading}
-                                                        className="w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:from-purple-400 disabled:to-indigo-400 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
+                                                        className="w-full py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 disabled:from-purple-400 disabled:to-indigo-400 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl text-sm sm:text-base"
                                                     >
                                                         {loading ? 'Processing...' : organization?.plan === 'free' ? 'Upgrade Now' : 'Switch Plan'}
                                                     </button>
@@ -617,17 +614,17 @@ export default function Settings() {
 
                             {/* Usage Tab */}
                             {activeTab === 'usage' && usage && (
-                                <div className="space-y-8">
+                                <div className="space-y-6 sm:space-y-8">
                                     <div>
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                             Resource Usage
                                         </h2>
-                                        <p className="text-gray-600 dark:text-gray-400">
+                                        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                             Monitor your organization's resource consumption
                                         </p>
                                     </div>
 
-                                    <div className="grid md:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                                         <UsageCard
                                             label="Projects"
                                             used={usage.projects.used}
@@ -652,7 +649,7 @@ export default function Settings() {
                                         />
                                     </div>
 
-                                    <div className="space-y-6">
+                                    <div className="space-y-4 sm:space-y-6">
                                         <UsageBar
                                             label="Projects"
                                             used={usage.projects.used}
@@ -675,18 +672,18 @@ export default function Settings() {
                                     </div>
 
                                     {(usage.projects.used / usage.projects.limit > 0.8 || usage.users.used / usage.users.limit > 0.8) && (
-                                        <div className="flex items-start space-x-4 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl shadow-lg">
-                                            <AlertTriangle className="w-8 h-8 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-1" />
-                                            <div>
-                                                <p className="text-yellow-900 dark:text-yellow-200 font-bold text-lg mb-1">
+                                        <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl shadow-lg">
+                                            <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-1" />
+                                            <div className="flex-1">
+                                                <p className="text-yellow-900 dark:text-yellow-200 font-bold text-base sm:text-lg mb-1">
                                                     Approaching Plan Limits
                                                 </p>
-                                                <p className="text-yellow-800 dark:text-yellow-300 text-sm">
+                                                <p className="text-yellow-800 dark:text-yellow-300 text-xs sm:text-sm mb-3 sm:mb-4">
                                                     You're using over 80% of your available resources. Consider upgrading your plan to avoid service interruptions.
                                                 </p>
                                                 <button
                                                     onClick={() => setActiveTab('plan')}
-                                                    className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors"
+                                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition-colors text-sm sm:text-base"
                                                 >
                                                     View Plans
                                                 </button>
@@ -698,33 +695,33 @@ export default function Settings() {
 
                             {/* Team Tab */}
                             {activeTab === 'team' && (
-                                <div className="space-y-8">
-                                    <div className="flex items-center justify-between">
+                                <div className="space-y-6 sm:space-y-8">
+                                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                         <div>
-                                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
                                                 Team Management
                                             </h2>
-                                            <p className="text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                                 Manage team members and their permissions
                                             </p>
                                         </div>
-                                        <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl flex items-center">
-                                            <Users className="w-5 h-5 mr-2" />
+                                        <button className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl flex items-center justify-center text-sm sm:text-base">
+                                            <Users className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                             Invite Members
                                         </button>
                                     </div>
 
                                     <div className="bg-white dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-                                        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                                        <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
                                             <div className="flex items-center justify-between">
-                                                <h3 className="font-semibold text-gray-900 dark:text-white">Active Members</h3>
-                                                <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                <h3 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white">Active Members</h3>
+                                                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                                                     {usage?.users.used || 0} / {usage?.users.limit || 5} members
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="p-6">
-                                            <p className="text-center text-gray-500 dark:text-gray-400 py-8">
+                                        <div className="p-4 sm:p-6">
+                                            <p className="text-center text-sm sm:text-base text-gray-500 dark:text-gray-400 py-8">
                                                 Team member list will appear here
                                             </p>
                                         </div>
@@ -734,46 +731,46 @@ export default function Settings() {
 
                             {/* Danger Zone Tab */}
                             {activeTab === 'danger' && (
-                                <div className="space-y-8">
+                                <div className="space-y-6 sm:space-y-8">
                                     <div className="flex items-center space-x-3">
-                                        <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-500" />
+                                        <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 dark:text-red-500" />
                                         <div>
-                                            <h2 className="text-2xl font-bold text-red-600 dark:text-red-500">
+                                            <h2 className="text-xl sm:text-2xl font-bold text-red-600 dark:text-red-500">
                                                 Danger Zone
                                             </h2>
-                                            <p className="text-gray-600 dark:text-gray-400">
+                                            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                                                 Irreversible and destructive actions
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="border-4 border-red-200 dark:border-red-900 rounded-2xl p-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10">
-                                        <div className="flex items-start gap-4 mb-6">
-                                            <div className="p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl">
-                                                <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-500" />
+                                    <div className="border-4 border-red-200 dark:border-red-900 rounded-2xl p-6 sm:p-8 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10">
+                                        <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
+                                            <div className="p-3 sm:p-4 bg-red-100 dark:bg-red-900/30 rounded-2xl flex-shrink-0">
+                                                <AlertTriangle className="w-6 h-6 sm:w-8 sm:h-8 text-red-600 dark:text-red-500" />
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-gray-900 dark:text-white text-xl mb-2">
+                                            <div className="flex-1">
+                                                <h3 className="font-bold text-gray-900 dark:text-white text-lg sm:text-xl mb-2">
                                                     Delete Organization
                                                 </h3>
-                                                <p className="text-gray-700 dark:text-gray-300 mb-4">
+                                                <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-4">
                                                     Once you delete your organization, there is no going back. This action will:
                                                 </p>
-                                                <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                                                <ul className="space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-6">
                                                     <li className="flex items-center">
-                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0"></span>
                                                         Permanently delete all projects and tasks
                                                     </li>
                                                     <li className="flex items-center">
-                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0"></span>
                                                         Remove all team members and their access
                                                     </li>
                                                     <li className="flex items-center">
-                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0"></span>
                                                         Delete all uploaded files and data
                                                     </li>
                                                     <li className="flex items-center">
-                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                                                        <span className="w-2 h-2 bg-red-500 rounded-full mr-3 flex-shrink-0"></span>
                                                         Cancel any active subscriptions
                                                     </li>
                                                 </ul>
@@ -781,9 +778,9 @@ export default function Settings() {
                                         </div>
                                         <button
                                             onClick={handleDeleteOrg}
-                                            className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center"
+                                            className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl font-bold transition-all shadow-lg hover:shadow-xl flex items-center justify-center text-sm sm:text-base"
                                         >
-                                            <AlertTriangle className="w-5 h-5 mr-2" />
+                                            <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                             Delete Organization Permanently
                                         </button>
                                     </div>
@@ -806,16 +803,16 @@ function UsageBar({ label, used, limit, unit = '', color = 'purple' }) {
     }
 
     return (
-        <div className="p-6 bg-white dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-700">
+        <div className="p-4 sm:p-6 bg-white dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between mb-3">
-                <span className="font-semibold text-gray-900 dark:text-white">{label}</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                <span className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white">{label}</span>
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">
                     {used} {unit} / {limit} {unit}
                 </span>
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4 overflow-hidden shadow-inner">
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 sm:h-4 overflow-hidden shadow-inner">
                 <div
-                    className={`bg-gradient-to-r ${colorClasses[color]} h-4 rounded-full transition-all duration-500 relative overflow-hidden`}
+                    className={`bg-gradient-to-r ${colorClasses[color]} h-3 sm:h-4 rounded-full transition-all duration-500 relative overflow-hidden`}
                     style={{ width: `${Math.min(percentage, 100)}%` }}
                 >
                     <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
@@ -837,15 +834,15 @@ function UsageCard({ label, used, limit, unit = '', color = 'purple', icon = 'ü
     }
 
     return (
-        <div className="bg-white dark:bg-gray-700/50 rounded-2xl p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all">
+        <div className="bg-white dark:bg-gray-700/50 rounded-2xl p-4 sm:p-6 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all">
             <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl">{icon}</span>
-                <span className={`text-2xl font-bold ${colorClasses[color].text}`}>
+                <span className="text-2xl sm:text-3xl">{icon}</span>
+                <span className={`text-xl sm:text-2xl font-bold ${colorClasses[color].text}`}>
                     {percentage.toFixed(0)}%
                 </span>
             </div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">{label}</h4>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <h4 className="font-semibold text-sm sm:text-base text-gray-900 dark:text-white mb-2">{label}</h4>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 {used} {unit} of {limit} {unit}
             </p>
         </div>
