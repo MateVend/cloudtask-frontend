@@ -40,11 +40,24 @@ export default function Team() {
     }
 
     const handleRoleChange = async (userId, newRole) => {
+        const currentUserId = JSON.parse(localStorage.getItem('user'))?.id // adjust if your user data is stored differently
+
+        // 🟡 Warn if admin is changing their own role
+        if (userId === currentUserId && newRole !== 'admin') {
+            const confirmed = confirm(
+                '⚠️ You are about to change your own role from Admin to another role.\n\n' +
+                'After this change, you will lose admin privileges and will NOT be able to promote yourself back to admin.\n\n' +
+                'Are you sure you want to continue?'
+            )
+            if (!confirmed) return
+        }
+
         try {
             await teamAPI.updateRole(userId, newRole)
             loadTeam()
         } catch (error) {
             console.error('Failed to update role:', error)
+            alert(error.response?.data?.message || 'Failed to update role')
         }
     }
 
