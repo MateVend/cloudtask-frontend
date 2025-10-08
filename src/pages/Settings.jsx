@@ -180,11 +180,19 @@ export default function Settings() {
 
         try {
             await organizationAPI.delete(organization.id)
+            alert('Organization deleted successfully!')
             navigate('/dashboard')
             window.location.reload()
         } catch (error) {
             console.error('Failed to delete organization:', error)
-            alert('Failed to delete organization')
+
+            const message =
+                error.response?.data?.message ||
+                (error.response?.status === 403
+                    ? 'You are not authorized to delete this organization.'
+                    : 'Failed to delete organization. Please try again.')
+
+            alert(message)
         }
     }
 
